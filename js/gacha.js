@@ -128,13 +128,19 @@ new (class extends require('./base.js') {
 	constructor() {
 		super();
 
-		const gacha_template = this.load('gacha.html');
-		let size, width, height, collab, contents;
+		function index(i) {
+			i = i.toString();
+			return i.length == 1 ? ' ' + i : i;
+		}
 
+		const gacha_template = this.load_a('html/gacha.html');
+		let size, width, height, collab, path, history, contents, gacha_menu = '', gacha_list = '', idx = 0;
+
+		this.fmt = new Intl.NumberFormat('zh-Hant', { maximumFractionDigits: 5 });
 		this.load_unit();
 
-		for (const pool of this.load('pools.json')) {
-
+		for (const pool of JSON.parse(this.load('pools.json'))) {
+			idx += 1;
 			size = pool['size'];
 			if (size) {
 				[width, height] = size.split('x');
@@ -166,50 +172,70 @@ new (class extends require('./base.js') {
 				console.assert(false);
 			}
 
-			this.write_string('gacha/' + to_path(pool['en-name']) + '.html', this.template(
+			history = pool['history'];
+			if (history)
+				history = `<p style="margin-block-end:0;">${history}</p>`;
+
+			path = 'gacha/' + to_path(pool['en-name']) + '.html';
+
+			this.write_string(path, this.template(
 				gacha_template,
-				{<p><a href="/collab/%s">%s合作活動</a></p>
+				{
 					'title': pool['tw-name'],
 					'img': pool['img'],
-					'h1': [pool['tw-name'], pool['jp-name'], pool['en-name']].filter(x => x).join('<br>')
+					'h1': [pool['tw-name'], pool['jp-name'], pool['en-name']].filter(x => x).join('<br>'),
 					'width': width,
 					'height': height,
 					'collab': collab,
 					'history': history,
 					'contents': contents
-				}
+				},
+				'gacha'
 			));
+			gacha_menu += `<a href="#${idx}">${index(idx)}. ${pool['tw-name']}</a>\n`;
+			gacha_list += `<h2 id="${idx}">
+	<a class="B" href="${path}" target="_blank">${pool['tw-name']}</a>
+</h2>
+<a class="B" href="${path}">
+	<img class="A" src="${pool['img']}" loading="lazy" width="${width}" height="${height}">
+</a>\n<br>\n`;
 		}
+
+		this.write_template('html/gachas.html', 'gachas.html', {
+			'nav-menu': gacha_menu,
+			'content': gacha_list
+		}, 'gacha');
 	}
 	write_rare(O) {
 		const
 			self = this,
 			units = O['units'],
-			rarity_desc = (
+			rarity_desc = [
 				"P.S. 基本貓於Lv60後成長幅度減半",
 				"P.S. EX貓於Lv60後成長幅度減半",
 				"P.S. 稀有貓於Lv70後成長幅度減半，於Lv90後成長幅度再次減半",
 				"P.S. 激稀有貓於Lv60後成長幅度減半，於Lv80後成長幅度再次減半",
 				"P.S. 超激稀有貓於Lv60後成長幅度減半，於Lv80後成長幅度再次減半",
 				"P.S. 傳說稀有貓於Lv60後成長幅度減半，於Lv80後成長幅度再次減半"
-			),
+			],
 			colors = ['#d0e0e3', '#d9d2e9', '#c9daf8', '#fce5cd'];
 		let S = '<div style="font-size:0.8em">';
-		S += units.map(x => rarity_desc[self.unit_rarity[x]]).join('<br>');
+		S += Array.from(new Set(units.map(x => rarity_desc[self.unit_rarity[x]]))).join('<br>');
 		S += '</div><table class="w3-table w3-border w3-centered w3-center rate" style="width:auto;margin-bottom:1.5em;margin-top:1.5em;"><thead><tr class="w3-black"><th colSpan=4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>稀有度</th><th>機率</th><th>分母</th><th>單隻</th></tr></thead><tbody>';
 		for (let rarity = 5;rarity >= 2;--rarity) {
 			let c = 0;
+
 			for (const u of units) {
 				if (this.unit_rarity[u] == rarity)
 					++c;
+			}
 
-				let x = rarity - 2;
-				let rate = O['rate'][x];
-				if (rate) {
-					let color = colors[x];
-					let name = ['稀有', '激稀有', '超激稀有', '傳說稀有'][x];
-					S += `<tr style="background-color:${colors[x]}"><td>${name}</td><td>${rate / 100}%</td><td>${c}隻</td><td>${rate / (100 * c)}%</td></tr>`;
-				}
+			let x = rarity - 2;
+			let rate = O['rate'][x];
+			if (rate) {
+				let color = colors[x];
+				let name = ['稀有', '激稀有', '超激稀有', '傳說稀有'][x];
+				S += `<tr style="background-color:${colors[x]}"><td>${name}</td><td>${rate / 100}%</td><td>${c}隻</td><td>${this.fmt.format(rate / (100 * c))}%</td></tr>`;
 			}
 		}
 		S += '</tbody></table>';
@@ -219,83 +245,90 @@ new (class extends require('./base.js') {
 <p class="w3-center">
 	<a class="B" href="/unit.html?id="${O['free']}">
 		<img src="" width="128" height="128" loading="lazy">
-	</a>${this.unit_desc[O['free']]}
+	</a>${this.unit_desc[O['free']].replaceAll('|', '<br>')}
 </p>
 </details>`;
 		}
 		let MUL = {};
 		for (let rarity = 5;rarity >= 0;--rarity) {
 			let out = {'0': []};
-			for (const u of units) {
+			outer: for (const u of units) {
 				if (this.unit_rarity[u] == rarity) {
 					if (MUL[u])
 						MUL[u] += 1;
 					else
 						MUL[u] = 1;
-				}
-				let in_set = false;
-				for (const [k, v] of Object.entries(category_set)) {
-					if (k != O['tw-name']) {
-						if (v.has(u)) {
+
+					for (const [k, v] of Object.entries(category_set)) {
+						if (k != O['tw-name'] && v.has(u)) {
 							if (out[k]) {
 								out[k].push(u);
 							} else {
 								out[k] = [u];
 							}
-							in_set = true;
-							break;
+							continue outer;
 						}
 					}
-				}
-				if (!in_set) 
+
 					out['0'].push(u);
+				}
+			}
+			let v = out['0'];
+			delete out['0'];
 
-				let v = out['0'];
-				delete out['0'];
-
-				if (v.length) {
-					const bg = ['', '', '#795548', '#93254b', '#9C27B0', '#673AB7'][rarity];
-						v.sort();
-						S += `<details open>
-<summary class="w3-tag w3-padding w3-round-large" style="background-color:${bg} !important">
-${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity]}</summary>
-<table class="w3-table w3-centered R" style="width:auto;margin:0 auto">
-<tbody>`;
-					let i = 0;
-					while (i < (v.length - 1)) {
-						S += `<tr><td>${this.gen1(v[i], MUL[v[i]])}</td><td>${this.gen1(v[i + 1], MUL[v[i + 1]])}</td></tr>`;
-						i += 2;
-					}
-
-					if (v.length & 1) {
-						let u = v[v.length - 1];
-						S += `<tr><td>${this.gen1(u, MUL[u])}</td></tr>`;
-					}
+			if (v.length) {
+				const bg = ['', '', '#795548', '#93254b', '#9C27B0', '#673AB7'][rarity];
+					v.sort();
+					S += `<details open>
+<summary class="w3-tag w3-padding w3-round-large" style="background-color:${bg} !important">${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity]}</summary>
+<table class="w3-table w3-centered R" style="width:auto;margin:0 auto"><tbody>`;
+				let i = 0;
+				v.sort();
+				while (i < (v.length - 1)) {
+					S += `<tr>${this.gen1(v[i], MUL[v[i]])}${this.gen1(v[i + 1], MUL[v[i + 1]])}</tr>`;
+					i += 2;
 				}
 
-				for (const [k, v] of Object.entries(out))
-					S += `<details><summary class="w3-tag w3-padding w3-round-large">${k}</summary><div style="width:max(60%,400px);margin:0 auto;padding:0.2em 0.6em;border:1px solid #ccc;text-align:left">${v.map(x => self.unit_name[x]).join('、')}</div></details>`;
+				if (v.length & 1) {
+					let u = v[v.length - 1];
+					S += `<tr>${this.gen1(u, MUL[u])}</tr>`;
+				}
+				S += '</tbody></table></details>';
 			}
+
+			for (const [k, v] of Object.entries(out))
+				S += `<details><summary class="w3-tag w3-padding w3-round-large">${k}</summary><div style="width:max(60%,400px);margin:0 auto;padding:0.2em 0.6em;border:1px solid #ccc;text-align:left">${v.sort().map(x => self.unit_name[x]).join('、')}</div></details>`;
 		}
+		return S;
+	}
+	count(arr, x) {
+		let c = 0;
+
+		for (const e of arr)
+			if (e == x)
+				++c;
+
+		return c;
 	}
 	write_normal(O) {
+		let I, S = '';
 		const
 			units = O['units'],
 			result = [],
 			tech_names = ['貓咪砲攻擊力', '貓咪砲射程','貓咪砲充電','工作狂貓的工作效率','工作狂貓錢包','城堡體力','研究力','會計能力','學習力','統率力'],
 			tech_links = ['TvNbDkW', 'xzUGr54', 'NwhDVgh', '1Uuos4y', 'DKyMbmd', 'UP3sYQ5', 'kClFt3L','lwKJIlC', 'osFMsUn', 'eToHyXp'];
 		for (let i = 0;i < 5;++i) {
-			let rate = O['rates'][i];
+			let rate = O['rate'][i];
 			if (!rate)
 				continue;
 
 			let group = units[i];
 			rate = new Fraction(rate, group.length);
 			for (const x of new Set(group)) {
-				let r = new Fraction(group.count(x)).mul(rate);
+				let r = new Fraction(this.count(group, x)).mul(rate);
 				switch (x[0]) {
 				case 0:
-					const I = x[1];
+					I = x[1];
 					result.push([
 						-1,
 						I + 667, 
@@ -306,18 +339,18 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 					]);
 					break;
 				case 1:
-					const I = reward_order[x[1]];
+					I = reward_order[x[1]];
 					result.push([
-						~~(o / 100),
-						o,
+						~~(I / 100),
+						I,
 						`/img/r/${I}.png`,
-						reward_names[I],
+						reward_names[x[1]],
 						r,
 						''
 					]);
 					break;
 				default:
-					const I = x[1];
+					I = x[1];
 					result.push([
 						-2,
 						I,
@@ -351,7 +384,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 				++count;
 			} else {
 				e_type = v[0];
-				result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${rate.valueOf() / 100}</td>`;
+				result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}</td>`;
 				count = 1;
 				rate = v[idx];
 				v[idx] = v[idx].valueOf() / 100;
@@ -361,38 +394,31 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 			v[1] = ['#d0e0e3', '#d9d2e9', '#c9daf8', '#fce5cd'][color];
 		}
 
-		result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${rate.valueOf() / 100}</td>`;
+		result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}</td>`;
 		S += '<table class="w3-table N" style="width:auto;margin-top:3em;"><thead><tr class="w3-black"><th colSpan=4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th></tr></thead><tbody>';
-		S += result.map(x => `<tr style="background-color:${x[1]}"><td><img src="${x[2]}" width="128" height="128"></td><td>${x[3]}</td><td>${x[4]}</td>${x[5]}</tr>`).join('');
+		S += result.map(x => `<tr style="background-color:${x[1]}"><td><img src="${x[2]}" width="128" height="128"></td><td>${x[3]}</td><td>${this.fmt.format(x[4])}</td>${x[5]}</tr>`).join('');
 		S += '</tbody></table>'
-	}
-	count(arr, x) {
-		let c = 0;
-
-		for (const e of arr)
-			if (e == x)
-				++c;
-
-		return c;
+		return S;
 	}
 	write_event(O) {
 		const
 			units = O['units'],
-			result = [],
-			fmt = new Intl.NumberFormat('zh-Hant', { maximumFractionDigits: 5 });
+			result = [];
 
 		let
+			I,
+			S = '',
 			must_drop_group = 0,
 			must_drop_rate = 0;
 
 		for (let i = 0;i < 9;++i) {
-			let rate = O['rates'][i];
+			let rate = O['rate'][i];
 			if (!rate)
 				continue;
 
 			let group = units[i >> 1];
 			let r = new Fraction(rate, group.length);
-			let must = O['rates'][i + 1] ? '*' : '';
+			let must = O['rate'][i + 1] ? '*' : '';
 			if (must) {
 				must_drop_rate = Fraction(10000 - rate);
 				must_drop_group = group;
@@ -400,7 +426,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 			for (const x of new Set(group)) {
 				let r = new Fraction(this.count(group, x));
 				if (x < 0) {
-					const I = -(x + 1);
+					I = -(x + 1);
 					result.push([
 						-1,
 						I + 667,
@@ -411,7 +437,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 						rate
 					]);
 				} else {
-					const I = reward_order[x];
+					I = reward_order[x];
 					result.push([
 						~~(x / 100),
 						x,
@@ -440,7 +466,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 				++count;
 			} else {
 				e_type = v[0];
-				result[last_i][5] = `<td rowSpan="${count}">${rate.valueOf() / 100}%</td>`;
+				result[last_i][5] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
 				count = 1;
 				rate = v[4];
 				last_i = i;
@@ -449,16 +475,16 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 			v[1] = ['#d0e0e3', '#d9d2e9', '#c9daf8', '#fce5cd'][color];
 		}
 
-		result[last_i][-2] = `<td rowSpan="${count}">${rate.valueOf() / 100}%</td>`;
+		result[last_i][-2] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
 		S += `<p>使用道具：${O['ticket'][0]}</p><img src="${O['ticket'][1]}" width="128" height="128"><br>`;
 		S += '<table class="w3-table N" style="position: relative;width:auto;margin-top:3em;"><thead><tr class="w3-black"><th colSpan=';
 		if (must_drop_rate)
-			S.write('5>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th><th>實際機率</th></tr></thead><tbody>');
+			S += '5>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th><th>實際機率</th></tr></thead><tbody>';
 		else
-			S.write('4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th></tr></thead><tbody>');
+			S += '4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th></tr></thead><tbody>';
 		
-		for (const x of result) {
-			const r = fmt.format(float(v[4]) / 100)
+		for (const v of result) {
+			const r = this.fmt.format(v[4].valueOf() / 100);
 			if (must_drop_rate) {
 				let a;
 				if (v[3].endsWith('*')) {
@@ -467,7 +493,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 				} else {
 					a = v[4].mul(must_drop_rate).valueOf() / 1000000;
 				}
-				S += `<tr style="background-color:${v[1]}"><td><img src="${v[2]}" width="128" height="128"></td><td>${v[3]}</td><td>${r}</td>${v[5]}<td>${fmt.format(a)}</td></tr>`;
+				S += `<tr style="background-color:${v[1]}"><td><img src="${v[2]}" width="128" height="128"></td><td>${v[3]}</td><td>${r}</td>${v[5]}<td>${this.fmt.format(a)}</td></tr>`;
 			} else {
 				S += `<tr style="background-color:${v[1]}"><td><img src="${v[2]}" width="128" height="128"></td><td>${v[3]}</td><td>${r}</td>${v[5]}</tr>`;
 			}
@@ -475,8 +501,8 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 		S += '</tbody></table><small>有*標示為每十抽必定可獲得的限定角色</small>';
 		S += `<p style="margin-top:2em;"><a href="${O['stage'][0]}">${O['stage'][1]}</a></p>`;
 		if (O['farm'])
-			S += `<table class="w3-table Y" style="width:auto">${obj['farm']}</table>`;
-		S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto;margin-bottom:2em">${obj['max']}</table>`;
+			S += `<table class="w3-table Y" style="width:auto">${O['farm']}</table>`;
+		S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto;margin-bottom:2em">${O['max']}</table>`;
 
 		return S;
 	}
@@ -484,7 +510,7 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 		const iter = category_set[O['category']][Symbol.iterator]();
 		let
 			f,
-			count = 0, 
+			c = 0, 
 			S = '<table class="w3-table w3-centered w3-striped" style="width:95%;margin:0 auto">\n\t<tbody>';
 
 		for (let u of iter) {
@@ -501,17 +527,27 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 		S += '\t</tbody>\n</table>';
 		return S;
 	}
+	gen1(u, C = 1) {
+		return C == 1 ?
+			`<td><div style="font-weight:bold">${this.unit_name[u]}</div><a class="B" href="/unit.html?id=${u}"><img src="/img/u/${u}/0.png" width="128" height="128" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>` :
+			`<td><div style="font-weight:bold" style="margin-block-start:1em;margin-block-end:1em">${this.unit_name[u]}<div style="color:red !important;font-size:0.8em">出現機率×${C}</div></div><a class="B" href="/unit.html?id={u}"><img src="/img/u/${u}/0.png" width="128" height="128" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>`;
+	}
 	load_unit() {
 		let line, data = this.load('cat.tsv').split('\n'), id = '';
+
 		this.unit_rarity = [];
+		this.unit_egg = [];
+		this.unit_name = [];
+		this.unit_desc = [];
+
 		for (let i = 1;i < data.length;++i) {
 			line = data[i];
 			this.unit_rarity.push(parseInt(line.slice(0, line.indexOf('\t'))));
+			this.unit_egg.push(line[6]);
 		}
 
-		data = this.load('form.tsv').split('\t');
-		this.unit_name = [];
-		this.unit_desc = [];
+		data = this.load('form.tsv').split('\n');
+
 		for (let i = 1;i < data.length;++i) {
 			line = data[i].split('\t');
 			if (id != line[0]) {
@@ -521,4 +557,4 @@ ${['基本', 'EX', '稀有', '激稀有', '超激稀有', '傳說稀有'][rarity
 			}
 		}
 	}
-}
+});

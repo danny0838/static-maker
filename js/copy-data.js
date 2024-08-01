@@ -9,7 +9,10 @@ const sources = [
 	'group.json',
 	'levelcurve.js',
 	'ENAME',
-	'reward.json'
+	'reward.json',
+	'cat.tsv',
+	'form.tsv',
+	'enemy.tsv'
 ];
 
 

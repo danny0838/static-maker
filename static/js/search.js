@@ -67,10 +67,10 @@ function renderTable(forms, page = 1) {
         for (let i = 0; i < display_forms.length; ++i) {
             var tr = document.createElement("tr");
             theForm = display_forms[i][1];
-            useCurve(cats_old[theForm.id].curve);
             _info = cats_old[theForm.id].info;
-            base = Math.min(def_lv, _info.maxBase);
-            plus = Math.min(plus_lv, _info.maxPlus);
+            my_curve = _curves[_info[16]];
+            base = Math.min(def_lv, _info[4]);
+            plus = Math.min(plus_lv, _info[5]);
             texts = [ theForm.id + "-" + (theForm.lvc + 1), `Lv ${base} + ` + plus, "", "", ~~theForm.gethp(), ~~theForm.getatk(), Math.round(theForm.getdps() + Number.EPSILON), theForm.kb, theForm.range, numStrT(theForm.attackF), theForm.speed, numStr(1.5 * theForm.price), numStr(display_forms[i][0]) ];
             for (let j = 0; j < 13; ++j) {
                 var e = document.createElement("td");
@@ -133,14 +133,14 @@ function calculate(code = "") {
     switch (form_s) {
     case 0:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             for (var form of c.forms) f(form) && results.push(form);
         }
         break;
     case 1:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             const F = c.forms[0];
             f(F) && results.push(F);
@@ -148,7 +148,7 @@ function calculate(code = "") {
         break;
     case 2:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             const F = c.forms[1];
             F && f(F) && results.push(F);
@@ -156,7 +156,7 @@ function calculate(code = "") {
         break;
     case 3:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             const F = c.forms[2];
             F && f(F) && results.push(F);
@@ -164,7 +164,7 @@ function calculate(code = "") {
         break;
     case 4:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             const F = c.forms[3];
             F && f(F) && results.push(F);
@@ -172,7 +172,7 @@ function calculate(code = "") {
         break;
     case 5:
         for (const c of cats) {
-            my_curve = _curves[c.curve];
+            my_curve = _curves[c.info[16]];
             _info = c.info;
             const F = c.forms[c.forms.length - 1];
             f(F) && results.push(F);
@@ -188,7 +188,7 @@ function calculate(code = "") {
     let fn = eval(`form => (${pcode})`);
     results = results.map((form, i) => {
         let c = cats_old[form.id];
-        useCurve(c.curve);
+        my_curve = _curves[c.info[16]];
         _info = c.info;
         var x = fn(form);
         return [ isFinite(x) ? x : 0, form ];
@@ -250,21 +250,21 @@ loadAllCats().then(_cats => {
         let TF = cats_old[i].forms[2];
         if (TF) {
             let info = cats_old[i].info;
-            let talents = info.talents;
+            let talents = info[10];
             if (talents) {
-                if (info.hasOwnProperty('talentT')) TF.trait |= info.talentT;
+                TF.trait |= talents[0];
                 TF.res = {};
-                for (let i = 0; i < 112 && info.talents[i]; i += 14)
-                    TF.applyTalent(talents.subarray(i, i + 14), info.talents[i + 1] || 1);
+                for (let i = 1; i < 113 && talents[i]; i += 14)
+                    TF.applyTalent(talents.subarray(i, i + 14), talents[i + 1] || 1);
                 TF = cats_old[i].forms[3];
                 if (TF) {
                     info = cats_old[i].info;
-                    talents = info.talents;
+                    talents = info[10];
 
-                    if (info.hasOwnProperty('talentT')) TF.trait |= info.talentT;
+                    TF.trait |= talents[0];
                     TF.res = {};
-                    for (let i = 0; i < 112 && info.talents[i]; i += 14)
-                        TF.applyTalent(talents.subarray(i, i + 14), info.talents[i + 1] || 1);
+                    for (let i = 1; i < 113 && talents[i]; i += 14)
+                        TF.applyTalent(talents.subarray(i, i + 14), talents[i + 1] || 1);
                 }
             }
         }

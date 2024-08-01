@@ -1,3 +1,11 @@
+const
+	sum_SOL = {{{sum_SOL}}},
+	sum_UL = {{{sum_UL}}},
+	sum_ZL = {{{sum_ZL}}},
+	drop_SOL = {{{drop_SOL}}},
+	drop_UL = {{{drop_UL}}},
+	drop_ZL = {{{drop_ZL}}};
+
 for (var j = 0;j < drop_SOL.length;++j) {
 	for (var i = 4;i < 11;++i) {
 		const rate = 100 - drop_SOL[j][9];

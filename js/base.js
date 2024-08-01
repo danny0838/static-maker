@@ -22,7 +22,7 @@ module.exports = class {
 			  a_enemy = '', 
 			  a_gacha = '', 
 			  a_stage = '';
-			const s = ' class="activ';
+			const s = ' class="active"';
 			switch (ac) {
 			case 'index': a_index = s; break;
 			case 'cat': a_cat = s; break;

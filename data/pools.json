@@ -695,7 +695,7 @@
 		"tw-name": "遠古的蛋",
 		"jp-name": "古びたタマゴ",
 		"en-name": "Ancient Eggs",
-		"category": "ancient-eggs",
+		"category": "遠古的蛋",
 		"size": "860x510",
 		"img": "https://i.imgur.com/vqEcus9.png",
 		"type": "category"
@@ -704,7 +704,7 @@
 		"tw-name": "月份貓",
 		"jp-name": "月間ステージのドロップ",
 		"en-name": "Monthly Event Cats",
-		"category": "monthly-rare",
+		"category": "月份貓",
 		"size": "860x240",
 		"img": "https://i.imgur.com/CbRi6y0.png",
 		"type": "category"

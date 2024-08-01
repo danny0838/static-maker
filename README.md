@@ -45,6 +45,9 @@ $ node foo.js
 * `medal.js`: produces `medal.html`
 * `collab.js`: produces `collabs.html`, `collab/`
 * `gacha.js`: produces `gachas.html`, `gacha/`
+* `material.js`: produces `material.js`
+* `crown.js`: produces `crown.js`
+* `gamatoto.js`: produces `gamatoto.html`
 
 ## Publish to Github Pages
 
