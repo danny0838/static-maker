@@ -32,10 +32,14 @@ body {
 	color: var(--color);
 	background-color: var(--bg);
 }
-input, option, select, button {
+input,
+option,
+select,
+button {
 	color: var(--color);
 }
-a, a:visited {
+a,
+a:visited {
 	color: var(--acolor) !important;
 	background-color: var(--abg);
 }

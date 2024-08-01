@@ -14,7 +14,8 @@
 	--liselect: #7fdbff;
 	--strip: #f1f1f1;
 }
-a, textarea {
+a,
+textarea {
 	appearance: none;
 }
 [data-theme="dark"] {
@@ -37,11 +38,14 @@ body {
 	color: var(--color);
 	background-color: var(--bg);
 }
-input, select, button {
+input,
+select,
+button {
 	color: var(--color);
 	background-color: var(--tcolor);
 }
-a, a:visited {
+a,
+a:visited {
 	color: var(--acolor) !important;
 	background-color: var(--abg);
 }
@@ -55,13 +59,14 @@ textarea {
 	color: var(--color);
 	background: var(--tcolor);
 }
-.o-selected button, .o-selected input {
+.o-selected button,
+.o-selected input {
 	box-shadow: 0 0 2px black;
 	background-color: var(--liselect);
 }
 .w3-bar-item {
 	background-color: var(--vbg);
 }
-.w3-striped tbody tr:nth-child(even){
-	background-color:var(--strip);
+.w3-striped tbody tr:nth-child(even) {
+	background-color: var(--strip);
 }

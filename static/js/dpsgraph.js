@@ -76,7 +76,7 @@ class FormDPS {
 		this.is_normal = !((this.F.atkType & ATK_LD) || (this.F.atkType & ATK_OMNI));
 		this.curve = C.curve;
 		this.info = C.info;
-	
+
 		let x = document.createElement('h3');
 		x.textContent = this.title;
 		this.B.dom.appendChild(x);
@@ -104,7 +104,7 @@ class FormDPS {
 		if (this.F.lds[0] || this.F.ldr[0]) {
 			const nums = '①②③';
 			obj = '';
-			for (let i = 0;i < this.F.lds.length;++i) {
+			for (let i = 0; i < this.F.lds.length; ++i) {
 				const x = this.F.lds[i];
 				const y = x + this.F.ldr[i];
 				if (x <= y)
@@ -385,7 +385,7 @@ class FormDPS {
 					p.oninput = function() {
 						let tal_cnt = 0;
 						let sup_cnt = 0;
-						for (let j = 0;;j += 14) {
+						for (let j = 0;; j += 14) {
 							if (j == i) {
 								if (self.info.talents[j + 13] == 1) {
 									self.s_lv[sup_cnt] = parseInt(this.value);
@@ -398,7 +398,8 @@ class FormDPS {
 							if (self.info.talents[j + 13] == 1)
 								++sup_cnt;
 							else
-								++tal_cnt;
+
+							++tal_cnt;
 						}
 					}
 					div.appendChild(p);
@@ -576,14 +577,14 @@ class FormDPS {
 		const F = new Form(structuredClone(this.F));
 		this.E = F;
 		let x, Xs;
-		this.atks = [F.atk];		
+		this.atks = [F.atk];
 
 		if (this.info.talents && F.lvc >= 2)
 			if (F.applyTalents(this.info, this.t_lv)) F.applySuperTalents(this.info.talents, this.s_lv);
 
 		if (F.atk1) this.atks.push(F.atk1);
 		if (F.atk2) this.atks.push(F.atk2);
-		
+
 		let T = F.trait & trait_treasure;
 
 		for (let i = 0; i < this.atks.length; ++i) this.atks[i] = ~~(
@@ -591,7 +592,7 @@ class FormDPS {
 				~~(Math.round(this.atks[i] * this.lvm) * 2.5)) * F.atkM);
 
 		if (this.options.base && F.ab.hasOwnProperty(AB_ATKBASE)) {
-			for (let i = 0; i < this.atks.length; ++i) 
+			for (let i = 0; i < this.atks.length; ++i)
 				this.atks[i] = ~~(this.atks[i] * (1 + (F.ab[AB_ATKBASE][0] / 100)));
 		} else {
 			x = F.ab[AB_CRIT];
@@ -612,7 +613,7 @@ class FormDPS {
 				} else if (this.options.s == 1) {
 					for (let i = 0; i < this.atks.length; ++i)
 						if (this.abis[i]) this.atks[i] = ~~(this.atks[i] * (1 + x[1] / 100));
-				}			
+				}
 			}
 			if (this.options.strong && F.ab.hasOwnProperty(AB_STRONG))
 				for (let i = 0; i < this.atks.length; ++i)
@@ -690,8 +691,8 @@ class FormDPS {
 		x = F.ab[AB_VOLC] || F.ab[AB_MINIVOLC];
 		if (x && this.options.volc != 2) {
 			this.surge_data = surge_model(x[1], x[2], Xs);
-			this.surge_mul = this.options.volc ? 
-				(x[4] / (x[2] - x[1])) : 
+			this.surge_mul = this.options.volc ?
+				(x[4] / (x[2] - x[1])) :
 				(x[0] * x[4]) / (100 * (x[2] - x[1]));
 			if (F.ab[AB_MINIVOLC]) this.surge_mul /= 5;
 		} else {

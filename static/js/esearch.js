@@ -26,7 +26,7 @@ function rerender(event) {
 	if (id >= 9) {
 		let i = 0;
 		let maxPage = Math.min(Math.ceil(last_forms.length / per_page), id + 7);
-		for (let c = id - 2;c <= maxPage;++c) {
+		for (let c = id - 2; c <= maxPage; ++c) {
 			const td = document.createElement('td');
 			td.textContent = c.toString();
 			td.onclick = rerender;
@@ -41,10 +41,12 @@ function rerender(event) {
 	}
 	renderTable(last_forms, id);
 }
+
 function setRange(e) {
-    per_page = parseInt(e.currentTarget.value);
-    renderTable(last_forms);
+	per_page = parseInt(e.currentTarget.value);
+	renderTable(last_forms);
 }
+
 function renderTable(forms, page = 1) {
 	let H = page * per_page;
 	let display_forms = forms.slice(H - per_page, H);
@@ -52,13 +54,13 @@ function renderTable(forms, page = 1) {
 	search_result.textContent = `顯示第${H - per_page + 1}到第${Math.min(forms.length, H)}個結果，共有${forms.length}個結果`;
 	last_forms = forms;
 	if (forms.length == 0) {
-		tbody.innerHTML = 
-'<tr><td colSpan="13">沒有符合條件的敵人！</td></tr>';
+		tbody.innerHTML =
+			'<tr><td colSpan="13">沒有符合條件的敵人！</td></tr>';
 		return;
 	}
 	if (!pages_a.children.length) {
 		let c = 1;
-		for (let i = 0;i < forms.length;i += per_page) {
+		for (let i = 0; i < forms.length; i += per_page) {
 			const td = document.createElement('td');
 			td.textContent = c.toString();
 			td.onclick = rerender;
@@ -71,12 +73,13 @@ function renderTable(forms, page = 1) {
 			if (c++ >= 10) break;
 		}
 	}
-	for (let i = 0;i < display_forms.length;++i) {
+	for (let i = 0; i < display_forms.length; ++i) {
 		const tr = document.createElement('tr');
 		const theForm = display_forms[i][1];
-		const texts = [theForm.id - 2, '', theForm.name ? theForm.name : (theForm.jp_name ? theForm.jp_name : '?'), ~~theForm.gethp(), ~~theForm.getatk(), 
-			~~theForm.getdps(), theForm.kb, theForm.range, numStrT(theForm.attackF).replace('秒', '秒/下'), theForm.speed, theForm.earn, numStr(display_forms[i][0])];
-		for (let j = 0;j < texts.length;++j) {
+		const texts = [theForm.id - 2, '', theForm.name ? theForm.name : (theForm.jp_name ? theForm.jp_name : '?'), ~~theForm.gethp(), ~~theForm.getatk(),
+			~~theForm.getdps(), theForm.kb, theForm.range, numStrT(theForm.attackF).replace('秒', '秒/下'), theForm.speed, theForm.earn, numStr(display_forms[i][0])
+		];
+		for (let j = 0; j < texts.length; ++j) {
 			const e = document.createElement('td');
 			e.textContent = texts[j].toString();
 			tr.appendChild(e);
@@ -91,9 +94,11 @@ function renderTable(forms, page = 1) {
 		tbody.appendChild(tr);
 	}
 }
+
 function simplify(code) {
 	return code.replaceAll('\n', '').replaceAll(' ', '').replaceAll('\r', '').replaceAll('\t', '');
 }
+
 function calculate(code = '') {
 	pages_a.textContent = '';
 	const sortCode = simplify(sort_expr.value);
@@ -169,9 +174,10 @@ function calculate(code = '') {
 	const a = atkBtn.textContent == 'OR' ? '1' : '0';
 	const b = traitBtn.textContent == 'OR' ? '1' : '0';
 	const c = abBtn.textContent == 'OR' ? '1' : '0';
-	url.searchParams.set('ao', a+b+c);
+	url.searchParams.set('ao', a + b + c);
 	history.pushState({}, "", url);
 }
+
 function addBtns(parent, s) {
 	if (!s) return;
 	const n = s.split(' ');
@@ -182,54 +188,54 @@ function addBtns(parent, s) {
 	}
 }
 loadAllEnemies()
-.then(_cats => {
-	cats = _cats;
-	const params = new URLSearchParams(location.search);
+	.then(_cats => {
+		cats = _cats;
+		const params = new URLSearchParams(location.search);
 
-	document.getElementById('loader').style.display = 'none';
-	document.getElementById('loader-text').style.display = 'none';
-	document.getElementById('main').style.display = 'block';
+		document.getElementById('loader').style.display = 'none';
+		document.getElementById('loader-text').style.display = 'none';
+		document.getElementById('main').style.display = 'block';
 
-	const Q = params.get('q');
+		const Q = params.get('q');
 
-	if (Q) {
-    name_search.value = Q;
-    name_search.oninput();
-    history.pushState({}, "", '/esearch.html');
-    return;
-	}
+		if (Q) {
+			name_search.value = Q;
+			name_search.oninput();
+			history.pushState({}, "", '/esearch.html');
+			return;
+		}
 
-	const filter = params.get('filter');
-	const sort = params.get('sort');
-	if (filter)
-		filter_expr.value = filter;
-	if (sort)
-		sort_expr.value = sort;
-	const ao = params.get('ao');
-	if (ao) {
-		atkBtn.textContent = ao[0] == '1' ? 'OR' : 'AND';
-		traitBtn.textContent = ao[1] == '1' ? 'OR' : 'AND';
-		abBtn.textContent = ao[2] == '1' ? 'OR' : 'AND';
-	}
-	addBtns(atk_s, params.get('atks'));
-	addBtns(ab_s, params.get('abs'));
-	addBtns(trait_s, params.get('traits'));
-	addBtns(kind_s, params.get('kinds'));
-	calculate(filter ? filter : '');
-});
+		const filter = params.get('filter');
+		const sort = params.get('sort');
+		if (filter)
+			filter_expr.value = filter;
+		if (sort)
+			sort_expr.value = sort;
+		const ao = params.get('ao');
+		if (ao) {
+			atkBtn.textContent = ao[0] == '1' ? 'OR' : 'AND';
+			traitBtn.textContent = ao[1] == '1' ? 'OR' : 'AND';
+			abBtn.textContent = ao[2] == '1' ? 'OR' : 'AND';
+		}
+		addBtns(atk_s, params.get('atks'));
+		addBtns(ab_s, params.get('abs'));
+		addBtns(trait_s, params.get('traits'));
+		addBtns(kind_s, params.get('kinds'));
+		calculate(filter ? filter : '');
+	});
 document.querySelectorAll('button').forEach(elem => {
 	elem.state = '0';
-	elem.addEventListener("click", function (event) {
-    const t = event.currentTarget;
-    if (t.state == '0') {
-      t.parentNode.classList.add('o-selected');
-      t.state = '1';
-    } else {
-      t.parentNode.classList.remove('o-selected');
-      t.state = '0';
-    }
-    calculate();
-  });
+	elem.addEventListener("click", function(event) {
+		const t = event.currentTarget;
+		if (t.state == '0') {
+			t.parentNode.classList.add('o-selected');
+			t.state = '1';
+		} else {
+			t.parentNode.classList.remove('o-selected');
+			t.state = '0';
+		}
+		calculate();
+	});
 });
 document.querySelectorAll('.or-and').forEach(e => {
 	e.onclick = function(event) {
@@ -245,7 +251,9 @@ document.getElementById('filter-go').onclick = function() {
 	calculate(simplify(filter_expr.value));
 }
 document.getElementById('filter-clear').onclick = function() {
-	function fn(x) { x.classList.remove('o-selected'); };
+	function fn(x) {
+		x.classList.remove('o-selected');
+	};
 	trait_s.querySelectorAll('.o-selected').forEach(fn);
 	atk_s.querySelectorAll('.o-selected').forEach(fn);
 	ab_s.querySelectorAll('.o-selected').forEach(fn);
@@ -294,27 +302,27 @@ name_search.oninput = function() {
 }
 const th = document.getElementById('th');
 for (let n of th.children) {
-    if (n.title) {
-        n._s = 0;
-        n._t = n.textContent;
-        n.onclick = function(event) {
-            if (n._s == 0) {
-                n._s = 1;
-                sort_expr.value = event.currentTarget.title;
-            } else {
-                n._s = 0;
-                sort_expr.value = '-' + event.currentTarget.title;
-            }
-            let y = n._s;
-            for (let x of th.children) {
-                if (x.title) {
-                    x.textContent = x._t;
-                    x._s = 0;
-                }
-            }
-            n._s = y;
-            n.textContent = n._t + (n._s ? '↑' : '↓');
-            calculate(simplify(filter_expr.value));
-        }
-    }
+	if (n.title) {
+		n._s = 0;
+		n._t = n.textContent;
+		n.onclick = function(event) {
+			if (n._s == 0) {
+				n._s = 1;
+				sort_expr.value = event.currentTarget.title;
+			} else {
+				n._s = 0;
+				sort_expr.value = '-' + event.currentTarget.title;
+			}
+			let y = n._s;
+			for (let x of th.children) {
+				if (x.title) {
+					x.textContent = x._t;
+					x._s = 0;
+				}
+			}
+			n._s = y;
+			n.textContent = n._t + (n._s ? '↑' : '↓');
+			calculate(simplify(filter_expr.value));
+		}
+	}
 }

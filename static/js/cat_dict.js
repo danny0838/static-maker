@@ -12,19 +12,20 @@ const text_e = document.getElementById('text');
 const not_e = document.getElementById('not-f');
 const fav_only = document.getElementById('fav-only');
 const ex_only = document.getElementById('ex-only');
-const cat_limits = new Set([{{{limited-cat}}}]);
+const cat_limits = new Set([ /*{{{limited-cat}}}*/ ]);
 let fav_setting = false;
 
 function t3str(x) {
-    var s = x.toString();
-    switch (s.length) {
-      case 2:
-        return "0" + s;
-      case 1:
-        return "00" + s;
-    }
-    return s;
+	var s = x.toString();
+	switch (s.length) {
+		case 2:
+			return "0" + s;
+		case 1:
+			return "00" + s;
+	}
+	return s;
 }
+
 function onClick(event) {
 	const t = event.currentTarget;
 	const i = t.firstElementChild;
@@ -49,6 +50,7 @@ function onClick(event) {
 		}
 	}
 }
+
 function add_unit(c) {
 	const img = new Image(128, 128);
 	const a = document.createElement('a');
@@ -68,7 +70,7 @@ function add_unit(c) {
 		fav.style.zIndex = 1;
 		a.appendChild(fav);
 	} else {
- 		img.classList.add('grayscale');
+		img.classList.add('grayscale');
 	}
 	cats_e.appendChild(a);
 	img.onmouseover = function() {
@@ -93,19 +95,19 @@ loadAllCats().then(_cs => {
 	document.getElementById('loader').style.display = 'none';
 	document.getElementById('loader-text').style.display = 'none';
 	main.style.display = 'block';
-  for (let cat of cats) {
-      const TF = cat.forms[2];
-      if (TF) {
-          const info = cat.info;
-          const talents = info.talents;
-          if (talents) {
-              if (info.hasOwnProperty('talentT')) TF.trait |= info.talentT;
-              TF.res = {};
-              for (let i = 0; i < 112 && info.talents[i]; i += 14)
-                  TF.applyTalent(talents.subarray(i, i + 14), info.talents[i + 1] || 1);
-          }
-      }
-  }
+	for (let cat of cats) {
+		const TF = cat.forms[2];
+		if (TF) {
+			const info = cat.info;
+			const talents = info.talents;
+			if (talents) {
+				if (info.hasOwnProperty('talentT')) TF.trait |= info.talentT;
+				TF.res = {};
+				for (let i = 0; i < 112 && info.talents[i]; i += 14)
+					TF.applyTalent(talents.subarray(i, i + 14), info.talents[i + 1] || 1);
+			}
+		}
+	}
 });
 const rarity = document.getElementById('rarity');
 const trait = document.getElementById('trait-f');
@@ -134,17 +136,17 @@ function ok() {
 		} else {
 			for (let x of chs) {
 				const r = parseInt(x.value);
-				for (i = 0;i < cats.length;++i)
+				for (i = 0; i < cats.length; ++i)
 					if (cats[i].info.rarity == r)
 						results.add(i);
 			}
 		}
 	} else {
 		if (fav_only.classList.contains('selected')) {
-			for (i of fav_list) 
+			for (i of fav_list)
 				results.add(i);
 		} else {
-			for (i = 0;i < cats.length;++i) 
+			for (i = 0; i < cats.length; ++i)
 				results.add(i);
 		}
 	}
@@ -177,7 +179,9 @@ function ok() {
 		}
 	}
 
-	let abs = [], imu = 0, res = [];
+	let abs = [],
+		imu = 0,
+		res = [];
 	let d = false;
 
 	for (i of ab_e[1].getElementsByClassName('selected'))
@@ -190,88 +194,90 @@ function ok() {
 		res.push(parseInt(i.value)), d = true;
 
 	if (abs.length || d) {
-	if (ab_e[0].src.endsWith('or.png')) {
-		loop: 
-		for (i = 0;i < cats.length;++i) {
-			const c = cats[i];
-			for (let f of c.forms) {
-				if (f.imu & imu)
-					continue loop;
-				for (let x of abs) {
-					if (x < 1000) {
-						if (f.ab.hasOwnProperty(x))
+		if (ab_e[0].src.endsWith('or.png')) {
+			loop: for (i = 0; i < cats.length; ++i) {
+				const c = cats[i];
+				for (let f of c.forms) {
+					if (f.imu & imu)
+						continue loop;
+					for (let x of abs) {
+						if (x < 1000) {
+							if (f.ab.hasOwnProperty(x))
+								continue loop;
+						} else if (f.atkType & (x - 1000))
 							continue loop;
-					} else if (f.atkType & (x - 1000))
+					}
+					for (let x of res)
+						if (f.res.hasOwnProperty(x))
 							continue loop;
 				}
-				for (let x of res)
-					if (f.res.hasOwnProperty(x))
-						continue loop;
-			}
-			results.delete(i);
-		}
-	} else {
-		for (i = 0;i < cats.length;++i) {
-			const c = cats[i];
-			let t = false;
-			loop: for (let f of c.forms) {
-				if ((f.imu & imu) != imu)
-					continue;
-				for (let x of abs) {
-					if (x < 1000) {
-						if (!f.ab.hasOwnProperty(x))
-							continue loop;
-					} else if (x -= 1000, x != (f.atkType & x))
-							continue loop;
-				}
-				for (let x of res)
-					if (!f.res.hasOwnProperty(x))
-						continue loop;
-				t = true;
-				break;
-			}
-			if (!t)
 				results.delete(i);
+			}
 		}
-	}
+		else {
+			for (i = 0; i < cats.length; ++i) {
+				const c = cats[i];
+				let t = false;
+				loop: for (let f of c.forms) {
+					if ((f.imu & imu) != imu)
+						continue;
+					for (let x of abs) {
+						if (x < 1000) {
+							if (!f.ab.hasOwnProperty(x))
+								continue loop;
+						} else if (x -= 1000, x != (f.atkType & x))
+							continue loop;
+					}
+					for (let x of res)
+						if (!f.res.hasOwnProperty(x))
+							continue loop;
+					t = true;
+					break;
+				}
+				if (!t)
+					results.delete(i);
+			}
+		}
 	}
 	chs = to_e.getElementsByTagName('input');
-	for (i = 1;i < 5;++i) {
+	for (i = 1; i < 5; ++i) {
 		if (chs[i].checked) {
 			switch (i) {
-			case 1: {
-				for (let x of results)
-					if (cats[x].info.hasOwnProperty('talents'))
-						results.delete(x);
-			} break;
-			case 2: {
-				for (let x of results)
-					if (!cats[x].info.hasOwnProperty('talents'))
-						results.delete(x);
-			} break;
-			case 3: {
-				for (let x of results) {
-					const c = cats[x].info.talents;
-					if (!c) {
-						results.delete(x);
-					} else {
-						outer: 
-						{
-							for (let j = 0; j < 112 && c[j]; j += 14)
-								if (c[j + 13] == 1)
-									break outer;
+				case 1: {
+					for (let x of results)
+						if (cats[x].info.hasOwnProperty('talents'))
+							results.delete(x);
+				}
+				break;
+				case 2: {
+					for (let x of results)
+						if (!cats[x].info.hasOwnProperty('talents'))
+							results.delete(x);
+				}
+				break;
+				case 3: {
+					for (let x of results) {
+						const c = cats[x].info.talents;
+						if (!c) {
+							results.delete(x);
+						} else {
+							outer: {
+								for (let j = 0; j < 112 && c[j]; j += 14)
+									if (c[j + 13] == 1)
+										break outer;
+								results.delete(x);
+							}
+						}
+					}
+				}
+				break;
+				case 4: {
+					for (let x of results) {
+						if (cats[x].forms.length != 4) {
 							results.delete(x);
 						}
 					}
 				}
-			} break;
-			case 4: {
-				for (let x of results) {
-					if (cats[x].forms.length != 4) {
-						results.delete(x);
-					}
-				}
-			}
 			}
 			break;
 		}
@@ -280,9 +286,9 @@ function ok() {
 	const s = new Set();
 	for (i of [G1, G2, G3])
 		for (let x of i.getElementsByClassName('selected')) {
-				for (let n of x.value.split(','))
-					s.add(parseInt(n));
-				d = true;
+			for (let n of x.value.split(','))
+				s.add(parseInt(n));
+			d = true;
 		}
 	if (d)
 		for (let x of results)
@@ -308,6 +314,7 @@ function ok() {
 	});
 	sorted.forEach(add_unit);
 }
+
 function clearAll(event) {
 	event.preventDefault();
 	event.stopPropagation();
@@ -319,12 +326,13 @@ function clearAll(event) {
 		}
 	}
 }
+
 function _clearAll(event) {
 	event.preventDefault();
 	event.stopPropagation();
 	for (let x of Ms)
-			for (let n of Array.from(x.getElementsByClassName('selected')))
-				n.classList.remove('selected');
+		for (let n of Array.from(x.getElementsByClassName('selected')))
+			n.classList.remove('selected');
 	cats_e.textContent = '';
 	cats.map(add_unit);
 }
@@ -341,6 +349,7 @@ document.onclick = function(event) {
 			return;
 		}
 }
+
 function ot() {
 	this.nextElementSibling.style.display = 'block';
 }
@@ -353,7 +362,7 @@ for (let B of main.querySelectorAll('.M button')) {
 		undo.push(this);
 	}
 }
-ab_e[0].onclick = trait.previousElementSibling.onclick = function () {
+ab_e[0].onclick = trait.previousElementSibling.onclick = function() {
 	if (this.src.endsWith('or.png'))
 		this.src = 'and.png';
 	else
@@ -371,16 +380,16 @@ document.getElementById('search-name').onclick = function(event) {
 		}
 	cats_e.textContent = '';
 	if (!q) return;
- 	let digit = q.length >= 1;
-  for (c of q) {
-    var x = c.codePointAt(0);
-    (x < 48 || 57 < x) && (digit = false);
-  }
-  if (digit) {
-  	const x = cats[parseInt(q)];
-  	x && (found = true, add_unit(x));
-  }
-	for (let i = 0;i < cats.length;++i) {
+	let digit = q.length >= 1;
+	for (c of q) {
+		var x = c.codePointAt(0);
+		(x < 48 || 57 < x) && (digit = false);
+	}
+	if (digit) {
+		const x = cats[parseInt(q)];
+		x && (found = true, add_unit(x));
+	}
+	for (let i = 0; i < cats.length; ++i) {
 		const c = cats[i];
 		for (let f of c.forms) {
 			if (f.name.includes(q) || f.jp_name.includes(q)) {
@@ -396,16 +405,17 @@ document.getElementById('search-name').onclick = function(event) {
 }
 onkeydown = function(event) {
 	if (event.key == 'Escape') {
-			for (let x of Ms)
-				if (x.style.display == 'block') {
-					x.style.display = 'none';
-					for (let b of undo)
-						b.classList.toggle('selected');
-					undo.length = 0;
-					return;
-		}
+		for (let x of Ms)
+			if (x.style.display == 'block') {
+				x.style.display = 'none';
+				for (let b of undo)
+					b.classList.toggle('selected');
+				undo.length = 0;
+				return;
+			}
 	}
 }
+
 function favorite(e) {
 	const t = e.target;
 	if (t.getAttribute('data-s') == '0') {
@@ -414,7 +424,7 @@ function favorite(e) {
 		t.classList.add('fav');
 		for (let x of main.getElementsByClassName('C'))
 			x.style.visibility = 'hidden';
-		cats_e.setAttribute("data-t","1")
+		cats_e.setAttribute("data-t", "1")
 		fav_setting = true;
 	} else {
 		t.setAttribute('data-s', '0');
@@ -422,15 +432,17 @@ function favorite(e) {
 		t.classList.remove('fav');
 		for (let x of main.getElementsByClassName('C'))
 			x.style.visibility = 'visible';
-  	cats_e.setAttribute("data-t","0")
-  	fav_setting = false;
-  	let arr = [];
-  	for (let x of fav_list) {
-  		const c = cats[x];
-  		arr.push(
-  			{'id': x, 'icon': c.forms[0].icon, 'name': c.forms[0].name || c.forms[0].jp_name}
-  		);
-  	}
-  	localStorage.setItem('star-cats', JSON.stringify(arr));
+		cats_e.setAttribute("data-t", "0")
+		fav_setting = false;
+		let arr = [];
+		for (let x of fav_list) {
+			const c = cats[x];
+			arr.push({
+				'id': x,
+				'icon': c.forms[0].icon,
+				'name': c.forms[0].name || c.forms[0].jp_name
+			});
+		}
+		localStorage.setItem('star-cats', JSON.stringify(arr));
 	}
 }

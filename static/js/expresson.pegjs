@@ -1,4 +1,4 @@
-// Go https://pegjs.org/online, paste this file contents
+// Visit https://pegjs.org/online, paste this file contents
 // Parser variable should set to "const pegjs"
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_precedence
 {

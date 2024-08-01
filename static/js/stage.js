@@ -1,5 +1,5 @@
 const
-  loader = document.getElementById('loader'),
+	loader = document.getElementById('loader'),
 	stages_top = [
 		["傳奇關卡", "レジェンドストーリー"],
 		["特別關卡", "イベントステージ"],
@@ -25,16 +25,16 @@ const
 	MC_JP_NAME = 1,
 	MC_GOLDCPU = 2,
 	SI_TW_NAME = 0,
-	SI_JP_NAME = 1, 
+	SI_JP_NAME = 1,
 	SI_XP = 2,
 	SI_HEALTH = 3,
 	SI_ENERGY = 4,
 	SI_LEN = 5,
 	SI_RAND = 6,
-	SI_DROP = 7, 
+	SI_DROP = 7,
 	SI_TIME = 8,
 	SI_MAXMATERIAL = 9,
-	SI_FLAGS = 10, 
+	SI_FLAGS = 10,
 	SI_MAX = 11,
 	SI_MIN_SPAWN = 12,
 	SI_BG = 13,
@@ -52,8 +52,8 @@ const
 	SM_WAITFORTIMER = 8,
 	SM_RESETMODE = 9,
 	SM_SPECIALCOND = 10,
-	SM_INVALID_COMBO = 11, 
-	SM_LIMIT = 12, 
+	SM_INVALID_COMBO = 11,
+	SM_LIMIT = 12,
 
 	QQ = '？？？',
 	conditions = {{{conditions}}},
@@ -80,11 +80,13 @@ var
 
 _l_f = localStorage.getItem('prec');
 if (_l_f) {
-	 _l_f = parseInt(_l_f);
+	_l_f = parseInt(_l_f);
 } else {
-	 _l_f = 2;
+	_l_f = 2;
 }
-_l_f = new Intl.NumberFormat(undefined, { 'maximumFractionDigits': _l_f });
+_l_f = new Intl.NumberFormat(undefined, {
+	'maximumFractionDigits': _l_f
+});
 
 if (localStorage.getItem('stagef') == 's')
 	stageF = new Intl.NumberFormat(undefined, {
@@ -96,27 +98,42 @@ function duo(n) {
 }
 
 function fromV(s) {
-    switch (s) {
-    case 0:
-    case 1:
-    case 2:
-    case 3:
-    case 4: return s;
-    case 6: return 5;
-    case 7: return 6;
-    case 11: return 7;
-    case 12: return 8;
-    case 13: return 9;
-    case 14: return 10;
-    case 24: return 11;
-    case 25: return 12;
-    case 27: return 13;
-    case 31: return 14;
-    case 33: return 15;
-    case 34: return 16;
-    case 36: return 17;
-    default: return 1;
-    }
+	switch (s) {
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			return s;
+		case 6:
+			return 5;
+		case 7:
+			return 6;
+		case 11:
+			return 7;
+		case 12:
+			return 8;
+		case 13:
+			return 9;
+		case 14:
+			return 10;
+		case 24:
+			return 11;
+		case 25:
+			return 12;
+		case 27:
+			return 13;
+		case 31:
+			return 14;
+		case 33:
+			return 15;
+		case 34:
+			return 16;
+		case 36:
+			return 17;
+		default:
+			return 1;
+	}
 }
 
 function namefor(str) {
@@ -480,37 +497,39 @@ function initUI() {
 		if (!filter_page) {
 			filter_page = document.getElementById('filter').firstElementChild;
 			var img, items = [
-				[0, 1, 2, 3, 4, 5, /* 戰鬥道具 */ 55, 56, 57 /*貓力達*/ ],
-				[22, 6, 105, 157, 20, 21, 155, 156], // 罐頭、金券
-				[
-					203, /* 傳說的捕蟲網 */
-					202, /* 傳說的聖水 */
-					185, /* 傳說的金元寶 */
-					200, /* 傳說的情書 */
-					163, /* 9週年 */
-					178, /* 10週年 */
-					198, /* 11週年 */
-					24, /* MH大狩猟チケット */
-					25, /* まもるよチケット */
-					137, /* 聖魔大戰巧克力 */
-					162, /* 伝説のにんじん（傳說中的胡蘿蔔）*/
-				], // 活動券
-				[50, 51, 52, 53, 54, 58], // 貓眼石
-				[30, 31, 32, 33, 34, /* 5 種子 */ 41 /* 古種 */ , 43 /* 虹種 */ , 160 /* 惡種 */ , 164 /* 金種 */ ],
-				[35, 36, 37, 38, 39, /* 5果實 */ 42 /* 古實 */ , 40 /* 虹果 */ , 161 /* 惡果 */ , 44 /* 金果 */ ],
-				[167, 168, 169, 170, 171, 184], // 貓薄荷
-				[179, 180, 181, 182, 183], // 5結晶
-				[85, 86, 87, 88, 89, 90, 91, 140], // 城堡素材
-				//[187, 188, 189, 190, 191, 192, 193, 194], // 城堡素材Z
-			], images = [
-				['4rrfKiE', 66, 65, '速攻不可', search_guard],
-				['JWSKik7', 80, 80, '掃盪不可', search_gold],
-				['Rfuh0jk', 64, 64, '惡魔塔', search_enemy, 'fy'],
-				['BMGIONq', 64, 64, '損毀的波動塔', search_enemy, '8o'],
-				['Z2DvobY', 64, 64, '波動塔', search_enemy, '8r'],
-				['osLQ4tt', 64, 64, '詛咒塔', search_enemy, 'ei'],
-				['aE0Z02o', 64, 64, '烈波塔', search_enemy, 'ek']
-			], div = document.createElement('div');
+					[0, 1, 2, 3, 4, 5, /* 戰鬥道具 */ 55, 56, 57 /*貓力達*/ ],
+					[22, 6, 105, 157, 20, 21, 155, 156], // 罐頭、金券
+					[
+						203, /* 傳說的捕蟲網 */
+						202, /* 傳說的聖水 */
+						185, /* 傳說的金元寶 */
+						200, /* 傳說的情書 */
+						163, /* 9週年 */
+						178, /* 10週年 */
+						198, /* 11週年 */
+						24, /* MH大狩猟チケット */
+						25, /* まもるよチケット */
+						137, /* 聖魔大戰巧克力 */
+						162, /* 伝説のにんじん（傳說中的胡蘿蔔）*/
+					], // 活動券
+					[50, 51, 52, 53, 54, 58], // 貓眼石
+					[30, 31, 32, 33, 34, /* 5 種子 */ 41 /* 古種 */ , 43 /* 虹種 */ , 160 /* 惡種 */ , 164 /* 金種 */ ],
+					[35, 36, 37, 38, 39, /* 5果實 */ 42 /* 古實 */ , 40 /* 虹果 */ , 161 /* 惡果 */ , 44 /* 金果 */ ],
+					[167, 168, 169, 170, 171, 184], // 貓薄荷
+					[179, 180, 181, 182, 183], // 5結晶
+					[85, 86, 87, 88, 89, 90, 91, 140], // 城堡素材
+					//[187, 188, 189, 190, 191, 192, 193, 194], // 城堡素材Z
+				],
+				images = [
+					['4rrfKiE', 66, 65, '速攻不可', search_guard],
+					['JWSKik7', 80, 80, '掃盪不可', search_gold],
+					['Rfuh0jk', 64, 64, '惡魔塔', search_enemy, 'fy'],
+					['BMGIONq', 64, 64, '損毀的波動塔', search_enemy, '8o'],
+					['Z2DvobY', 64, 64, '波動塔', search_enemy, '8r'],
+					['osLQ4tt', 64, 64, '詛咒塔', search_enemy, 'ei'],
+					['aE0Z02o', 64, 64, '烈波塔', search_enemy, 'ek']
+				],
+				div = document.createElement('div');
 			div.classList.add('V');
 			for (const i of images) {
 				img = new Image(i[1], i[2]);
@@ -813,6 +832,7 @@ M1.oninput = (function(event, sts) {
 		}
 	}
 });
+
 function process_2() {
 	const start = M1.selectedIndex * 1000000 + M2.selectedIndex * 1000;
 
@@ -1049,7 +1069,7 @@ function render_stage() {
 			span.textContent = "※掃蕩不可※";
 			th.appendChild(span);
 		}
-		
+
 		if (flags3 & 1) {
 			var span = document.createElement("div");
 			span.classList.add('w');
@@ -1164,7 +1184,7 @@ function render_stage() {
 		st3[3].textContent = "無限制";
 	}
 	if (flags3 & 8) {
-		st2[1].textContent =  numStr(~~((parseInt(info3[SI_HEALTH], 10) * mult) / 100));
+		st2[1].textContent = numStr(~~((parseInt(info3[SI_HEALTH], 10) * mult) / 100));
 	} else {
 		st2[1].textContent = numStr(parseInt(info3[SI_HEALTH], 10));
 	}
@@ -1176,16 +1196,16 @@ function render_stage() {
 	}
 	var xp = parseInt(info3[SI_XP], 36);
 	switch (M1.selectedIndex) {
-	case 3:
-		st3[1].textContent = 1000 + Math.min(M3.selectedIndex, 47) * 300;
-		break;
-	case 0:
-	case 9:
-	case 6: 
-		st3[1].textContent = numStr(~~(xp * 9 * 4.7));
-		break;
-	default:
-		st3[1].textContent = numStr(~~(xp * 4.7));
+		case 3:
+			st3[1].textContent = 1000 + Math.min(M3.selectedIndex, 47) * 300;
+			break;
+		case 0:
+		case 9:
+		case 6:
+			st3[1].textContent = numStr(~~(xp * 9 * 4.7));
+			break;
+		default:
+			st3[1].textContent = numStr(~~(xp * 4.7));
 	}
 
 	st2[5].textContent = info3[SI_BG];

@@ -50,120 +50,99 @@ const
 		"infoFiltered": "(從 _MAX_ 筆結果中篩選)"
 	};
 
-const F = new Intl.NumberFormat(undefined, { 'maximumFractionDigits': 2 });
+const F = new Intl.NumberFormat(undefined, {
+	'maximumFractionDigits': 2
+});
 
 function format(num) {
 	if (num)
 		return (num / 10).toString(); //return F.format(num);
 	return '';
 }
-$('#SOL').DataTable(
-	{
-		'data': SOL,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [3, 4, 5, 6],
-				"render": format
-		}
-		]
+$('#SOL').DataTable({
+	'data': SOL,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [3, 4, 5, 6],
+		"render": format
+	}]
+});
+$('#UL').DataTable({
+	'data': UL,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [3, 4, 5, 6],
+		"render": format
+	}]
+});
+$('#ZL').DataTable({
+	'data': ZL,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [3, 4, 5, 6],
+		"render": format
+	}]
+});
+$('#MONTHY').DataTable({
+	'data': MONTHY,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [3, 4, 5, 6],
+		"render": format
+	}]
+});
+$('#STAR').DataTable({
+	'data': STAR,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [1, 2, 3, 4],
+		"render": format
+	}]
+});
+$('#COLLAB').DataTable({
+	'data': COLLAB,
+	"bAutoWidth": false,
+	'language': lang,
+	"columnDefs": [{
+		"targets": [3, 4, 5, 6],
+		"render": format
+	}],
+	'rowGroup': {
+		'dataSrc': 0
 	}
-);
-$('#UL').DataTable(
-	{
-		'data': UL,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [3, 4, 5, 6],
-				"render": format
-			}
-		]
-	}
-);
-$('#ZL').DataTable(
-	{
-		'data': ZL,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [3, 4, 5, 6],
-				"render": format
-			}
-		]
-	}
-);
-$('#MONTHY').DataTable(
-	{
-		'data': MONTHY,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [3, 4, 5, 6],
-				"render": format
-			}
-		]
-	}
-);
-$('#STAR').DataTable(
-	{
-		'data': STAR,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [1, 2, 3, 4],
-				"render": format
-			}
-		]
-	}
-);
-$('#COLLAB').DataTable(
-	{
-		'data': COLLAB,
-		"bAutoWidth": false,
-		'language': lang,
-		"columnDefs": [
-			{
-				"targets": [3, 4, 5, 6],
-				"render": format
-			}
-		],
-		'rowGroup': {
-			'dataSrc': 0
-		}
-	}
-);
+});
 const _sis = document.getElementById('site-search');
 const _s_r = document.getElementById('site-s-result');
 
 document.getElementById('search-btn').onclick = function(event) {
-  event.preventDefault();
-  event.currentTarget.previousElementSibling.style.display='inline-block';
+	event.preventDefault();
+	event.currentTarget.previousElementSibling.style.display = 'inline-block';
 }
 _sis.oninput = _sis.onfocus = _sis.onkeydown = function() {
-  _s_r.style.display = 'block';
+	_s_r.style.display = 'block';
 }
 _sis.onblur = function() {
-  setTimeout(function() {
-	_s_r.style.display = 'none';
-  }, 500);
+	setTimeout(function() {
+		_s_r.style.display = 'none';
+	}, 500);
 }
+
 function _s_open(w) {
-  location.href = w + _sis.value;
+	location.href = w + _sis.value;
 }
 _sis.parentNode.onsubmit = function(e) {
 	if (!_sis.value)
-	  return false;
+		return false;
 	if (location.href.includes('enemy') || location.href.includes('esearch'))
-	  location.href = '/esearch.html?q=' + _sis.value;
+		location.href = '/esearch.html?q=' + _sis.value;
 	else if (location.href.includes('stage'))
-	  location.href = '/stage.html?q=' + _sis.value;
+		location.href = '/stage.html?q=' + _sis.value;
 	else
-	  location.href = '/search.html?q=' + _sis.value;
+		location.href = '/search.html?q=' + _sis.value;
 	return false;
 }
