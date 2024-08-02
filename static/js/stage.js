@@ -20,7 +20,7 @@ const
 		["傳奇故事0", "レジェンドストーリー0"],
 		["異次元競技場", "異次元コロシアム"]
 	],
-	eggs = new Set([{{{egg-set}}}]),
+	eggs = new Set({{{egg-set}}}),
 	MC_TW_NAME = 0,
 	MC_JP_NAME = 1,
 	MC_GOLDCPU = 2,
@@ -93,10 +93,6 @@ if (localStorage.getItem('stagef') == 's')
 		maximumFractionDigits: 2
 	});
 
-function duo(n) {
-	return n < 10 ? "0" + n.toString() : n.toString();
-}
-
 function fromV(s) {
 	switch (s) {
 		case 0:
@@ -148,19 +144,19 @@ function namefor(str) {
 function createReward(tr, v) {
 	var td = document.createElement("td");
 	var td1 = document.createElement('td');
-	var img = new Image(128, 128);
-	img.style.maxWidth = "2.7em";
-	img.style.height = 'auto';
-	td1.appendChild(img);
 	if (v.length != 3) {
+		var img = new Image(104, 79);
+		img.style.maxWidth = "3em";
+		img.style.height = 'auto';
+		td1.appendChild(img);
 		const S = v[4];
 		if (v[3].endsWith("的權利")) {
-			img.src = `/img/u/${S}/s/uni${S}_s00.png`;
+			img.src = `/img/u/${S}/2.png`;
 		} else {
 			if (eggs.has(parseInt(S)))
-				img.src = '/img/s/000/uni000_m01.png';
+				img.src = '/img/s/0/0.png';
 			else
-				img.src = `/img/u/${S}/f/uni${S}_f00.png`;
+				img.src = `/img/u/${S}/0.png`;
 		}
 		var a = document.createElement("a");
 		a.href = "/unit.html?id=" + S;
@@ -168,13 +164,17 @@ function createReward(tr, v) {
 		a.style.verticalAlign = 'center';
 		td.appendChild(a);
 	} else {
+		var img = new Image(128, 128);
+		img.style.maxWidth = "2.7em";
+		img.style.height = 'auto';
+		td1.appendChild(img);
 		var rw = parseInt(v[1], 10);
 		var span = document.createElement('span');
 		span.style.verticalAlign = 'center';
 		span.textContent = char_groups['RWNAME'][rw].concat(' ×', v[2] > 1000 ? numStr(v[2]) : v[2]);
 		if (rw <= 13 && rw >= 11)
 			rw += 9;
-		img.src = "/img/r/gatyaitemD_".concat(duo(rw), "_f.png");
+		img.src = `/img/r/${rw}.png`;
 		td.appendChild(span);
 	}
 	tr.appendChild(td);
@@ -551,7 +551,7 @@ function initUI() {
 					img = new Image(128, 128);
 					img.loading = 'lazy';
 					img.classList.add('S');
-					img.src = '/img/r/gatyaitemD_' + duo(n) + '_f.png';
+					img.src = `/img/r/${n}.png`;
 					if (n >= 20 && n <= 22)
 						img.i = n - 9;
 					else
@@ -889,17 +889,6 @@ function makeTd(p, txt) {
 	p.appendChild(td);
 }
 
-function t3str(x) {
-	var s = x.toString();
-	switch (s.length) {
-		case 2:
-			return "0" + s;
-		case 1:
-			return "00" + s;
-	}
-	return s;
-}
-
 function parse_drop(D) {
 	return D.split('|').map(function(x) {
 		return x.split(',');
@@ -1132,7 +1121,7 @@ function render_stage() {
 		var rw = materialDrops[i - 1];
 		img.style.maxWidth = "2.7em";
 		img.style.height = 'auto';
-		img.src = "/img/r/gatyaitemD_".concat(duo(rw), "_f.png");
+		img.src = `/img/r/${rw}.png`;
 		var td2 = document.createElement('td');
 		var tr = document.createElement("tr");
 		var td0 = document.createElement("td");
@@ -1332,7 +1321,6 @@ function render_stage() {
 		const tr = document.createElement("tr");
 		const a = document.createElement('a');
 		const enemy = parseInt(strs[0], 36);
-		const s = t3str(enemy);
 		const img = new Image(64, 64);
 		const m = mult / 100;
 		const td = document.createElement('td');
@@ -1347,7 +1335,7 @@ function render_stage() {
 
 		makeTd(tr, char_groups['ENAME'][enemy] || "?"); // enemy name
 
-		img.src = "/img/e/" + s + "/enemy_icon_" + s + ".png";
+		img.src = `/img/e/${enemy}/0.png`;
 		if (strs[6].length == 2) {
 			hpM = ~~(hpM * m).toString() + '%';
 			atkM = atkM.toString() + '%';

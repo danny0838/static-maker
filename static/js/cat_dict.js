@@ -52,11 +52,12 @@ function onClick(event) {
 }
 
 function add_unit(c) {
-	const img = new Image(128, 128);
+	const img = new Image(104, 79);
 	const a = document.createElement('a');
 	img.loading = 'lazy';
 	const F = c.forms[0];
 	img.src = F.icon;
+	img.style.padding = '7px';
 	a.href = '/unit.html?id=' + F.id;
 	a.onclick = onClick;
 	a.appendChild(img);
@@ -97,13 +98,12 @@ loadAllCats().then(_cs => {
 	for (let cat of cats) {
 		const TF = cat.forms[2];
 		if (TF) {
-			const info = cat.info;
-			const talents = info.talents;
+			const talents = cat.info[10];
 			if (talents) {
-				if (info.hasOwnProperty('talentT')) TF.trait |= info.talentT;
+				TF.trait |= talents[0];
 				TF.res = {};
-				for (let i = 0; i < 112 && info.talents[i]; i += 14)
-					TF.applyTalent(talents.subarray(i, i + 14), info.talents[i + 1] || 1);
+				for (let i = 1; i < 113 && talents[i]; i += 14)
+					TF.applyTalent(talents.subarray(i, i + 14), talents[i + 1] || 1);
 			}
 		}
 	}
@@ -129,14 +129,14 @@ function ok() {
 			for (let x of chs) {
 				const r = parseInt(x.value);
 				for (i of fav_list)
-					if (cats[i].info.rarity == r)
+					if (cats[i].info[0] == r)
 						results.add(i);
 			}
 		} else {
 			for (let x of chs) {
 				const r = parseInt(x.value);
 				for (i = 0; i < cats.length; ++i)
-					if (cats[i].info.rarity == r)
+					if (cats[i].info[0] == r)
 						results.add(i);
 			}
 		}
@@ -244,24 +244,24 @@ function ok() {
 			switch (i) {
 				case 1: {
 					for (let x of results)
-						if (cats[x].info.hasOwnProperty('talents'))
+						if (cats[x].info[10])
 							results.delete(x);
 				}
 				break;
 				case 2: {
 					for (let x of results)
-						if (!cats[x].info.hasOwnProperty('talents'))
+						if (!cats[x].info[10])
 							results.delete(x);
 				}
 				break;
 				case 3: {
 					for (let x of results) {
-						const c = cats[x].info.talents;
+						const c = cats[x].info[10];
 						if (!c) {
 							results.delete(x);
 						} else {
 							outer: {
-								for (let j = 0; j < 112 && c[j]; j += 14)
+								for (let j = 1; j < 113 && c[j]; j += 14)
 									if (c[j + 13] == 1)
 										break outer;
 								results.delete(x);
@@ -309,7 +309,7 @@ function ok() {
 	for (const x of results)
 		sorted[i++] = cats[x];
 	sorted.sort((x, y) => {
-		x.info.rarity - y.info.rarity
+		x.info[0] - y.info[0]
 	});
 	sorted.forEach(add_unit);
 }

@@ -83,25 +83,27 @@ function renderTable(forms, page = 1) {
 			}
 		}
 		for (let i = 0; i < display_forms.length; ++i) {
-			var tr = document.createElement("tr");
-			theForm = display_forms[i][1];
-			_info = cats_old[theForm.id].info;
+			let tr = document.createElement("tr");
+			let F = display_forms[i][1];
+			_info = cats_old[F.id].info;
 			my_curve = _curves[_info[16]];
-			base = Math.min(def_lv, _info[4]);
-			plus = Math.min(plus_lv, _info[5]);
-			texts = [theForm.id + "-" + (theForm.lvc + 1), `Lv ${base} + ` + plus, "", "", ~~theForm.gethp(), ~~theForm.getatk(), Math.round(theForm.getdps() + Number.EPSILON), theForm.kb, theForm.range, numStrT(theForm.attackF), theForm.speed, numStr(1.5 * theForm.price), numStr(display_forms[i][0])];
+			let base = Math.min(def_lv, _info[4]);
+			let plus = Math.min(plus_lv, _info[5]);
+			let texts = [F.id + "-" + (F.lvc + 1), `Lv ${base} + ` + plus, "", "", ~~F.gethp(), ~~F.getatk(), Math.round(F.getdps() + Number.EPSILON), F.kb, F.range, numStrT(F.attackF), F.speed, numStr(1.5 * F.price), numStr(display_forms[i][0])];
 			for (let j = 0; j < 13; ++j) {
 				var e = document.createElement("td");
-				3 == j ? (theForm.name && e.appendChild(document.createTextNode(theForm.name)),
-						theForm.jp_name && (e.appendChild(document.createElement("br")),
-							e.appendChild(document.createTextNode(theForm.jp_name)))) : e.textContent = texts[j].toString(),
+				3 == j ? (F.name && e.appendChild(document.createTextNode(F.name)),
+						F.jp_name && (e.appendChild(document.createElement("br")),
+							e.appendChild(document.createTextNode(F.jp_name)))) : e.textContent = texts[j].toString(),
 					tr.appendChild(e);
 			}
 			base = document.createElement("a");
-			base.href = "./unit.html?id=" + theForm.id.toString(), base.style.width = "110px",
-				base.style.height = "85px", base.style.backgroundImage = `url(${theForm.icon})`,
-				base.style.backgroundPosition = "-10px -20px", base.style.display = "inline-block",
-				tr.children[2].appendChild(base), tbody.appendChild(tr);
+			base.href = "./unit.html?id=" + F.id.toString();
+			plus = new Image(104, 79);
+			plus.src = F.icon;
+			base.appendChild(plus);
+			tr.children[2].appendChild(base);
+			tbody.appendChild(tr);
 		}
 	}
 }

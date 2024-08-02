@@ -206,6 +206,9 @@ new (class extends require('./base.js') {
 			'content': gacha_list
 		}, 'gacha');
 	}
+	uimg(u) {
+		return this.egg_set.has(u) ? `/img/u/${u}/2.png` : `/img/u/${u}/0.png`;
+	}
 	write_rare(O) {
 		const
 			self = this,
@@ -235,7 +238,7 @@ new (class extends require('./base.js') {
 			if (rate) {
 				let color = colors[x];
 				let name = ['稀有', '激稀有', '超激稀有', '傳說稀有'][x];
-				S += `<tr style="background-color:${colors[x]}"><td>${name}</td><td>${rate / 100}%</td><td>${c}隻</td><td>${this.fmt.format(rate / (100 * c))}%</td></tr>`;
+				S += `<tr style="background-color:${colors[x]}"><td>${name}</td><td>${rate / 100}%</td><td>${c}</td><td>${this.fmt.format(rate / (100 * c))}%</td></tr>`;
 			}
 		}
 		S += '</tbody></table>';
@@ -244,7 +247,7 @@ new (class extends require('./base.js') {
 <summary class="w3-tag w3-padding w3-round-large">11連自動出現在倉庫</summary>
 <p class="w3-center">
 	<a class="B" href="/unit.html?id="${O['free']}">
-		<img src="" width="128" height="128" loading="lazy">
+		<img src="${this.uimg(O['free'])}" width="104" height="79" loading="lazy">
 	</a>${this.unit_desc[O['free']].replaceAll('|', '<br>')}
 </p>
 </details>`;
@@ -254,10 +257,12 @@ new (class extends require('./base.js') {
 			let out = {'0': []};
 			outer: for (const u of units) {
 				if (this.unit_rarity[u] == rarity) {
-					if (MUL[u])
+					if (MUL[u]) {
 						MUL[u] += 1;
-					else
+						continue;
+					} else {
 						MUL[u] = 1;
+					}
 
 					for (const [k, v] of Object.entries(category_set)) {
 						if (k != O['tw-name'] && v.has(u)) {
@@ -297,7 +302,7 @@ new (class extends require('./base.js') {
 			}
 
 			for (const [k, v] of Object.entries(out))
-				S += `<details><summary class="w3-tag w3-padding w3-round-large">${k}</summary><div style="width:max(60%,400px);margin:0 auto;padding:0.2em 0.6em;border:1px solid #ccc;text-align:left">${v.sort().map(x => self.unit_name[x]).join('、')}</div></details>`;
+				S += `<details><summary class="w3-tag w3-padding w3-round-large">${k}</summary><div style="width:max(60%,400px);margin:.7em auto;padding:.3em .8em;border:1px solid #ccc;text-align:left">${v.sort().map(x => self.unit_name[x]).join('、')}</div></details>`;
 		}
 		return S;
 	}
@@ -332,10 +337,13 @@ new (class extends require('./base.js') {
 					result.push([
 						-1,
 						I + 667, 
-						`/img/u/${I}/0.png`,
+						this.uimg(I),
 						`<a target="_blank" href="/unit.html?id=${I}">${this.unit_name[I]}</a>`,
 						r, 
-						''
+						'',
+						'104',
+						'79',
+						'style="padding:.4em" '
 					]);
 					break;
 				case 1:
@@ -343,9 +351,12 @@ new (class extends require('./base.js') {
 					result.push([
 						~~(I / 100),
 						I,
-						`/img/r/${I}.png`,
+						`/img/r/${x[1]}.png`,
 						reward_names[x[1]],
 						r,
+						'',
+						'128',
+						'128',
 						''
 					]);
 					break;
@@ -357,6 +368,9 @@ new (class extends require('./base.js') {
 						`https://i.imgur.com/${tech_links[I]}.png`,
 						tech_names[I],
 						r,
+						'',
+						'128',
+						'128',
 						''
 					]);
 					break;
@@ -377,26 +391,25 @@ new (class extends require('./base.js') {
 
 		for (let i = 0;i < result.length;++i) {
 			const v = result[i];
-			const idx = v.length - 2;
 			if (e_type == v[0]) {
-				rate = rate.add(v[idx]);
-				v[idx] = v[idx].valueOf() / 100;
+				rate = rate.add(v[4]);
+				v[4] = v[4].valueOf() / 100;
 				++count;
 			} else {
 				e_type = v[0];
-				result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}</td>`;
+				result[last_i][5] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
 				count = 1;
-				rate = v[idx];
-				v[idx] = v[idx].valueOf() / 100;
+				rate = v[4];
+				v[4] = v[4].valueOf() / 100;
 				last_i = i;
 				++color;
 			}
 			v[1] = ['#d0e0e3', '#d9d2e9', '#c9daf8', '#fce5cd'][color];
 		}
 
-		result[last_i][result[last_i].length - 1] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}</td>`;
+		result[last_i][5] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
 		S += '<table class="w3-table N" style="width:auto;margin-top:3em;"><thead><tr class="w3-black"><th colSpan=4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th></tr></thead><tbody>';
-		S += result.map(x => `<tr style="background-color:${x[1]}"><td><img src="${x[2]}" width="128" height="128"></td><td>${x[3]}</td><td>${this.fmt.format(x[4])}</td>${x[5]}</tr>`).join('');
+		S += result.map(x => `<tr style="background-color:${x[1]}"><td><img ${x[8]}src="${x[2]}" width="${x[6]}" height="${x[7]}"></td><td>${x[3]}</td><td>${this.fmt.format(x[4])}%</td>${x[5]}</tr>`).join('');
 		S += '</tbody></table>'
 		return S;
 	}
@@ -411,41 +424,47 @@ new (class extends require('./base.js') {
 			must_drop_group = 0,
 			must_drop_rate = 0;
 
-		for (let i = 0;i < 9;++i) {
+		for (let i = 0;i < 9;i += 2) {
 			let rate = O['rate'][i];
 			if (!rate)
 				continue;
 
 			let group = units[i >> 1];
-			let r = new Fraction(rate, group.length);
+			let R = new Fraction(rate, group.length);
 			let must = O['rate'][i + 1] ? '*' : '';
 			if (must) {
 				must_drop_rate = Fraction(10000 - rate);
 				must_drop_group = group;
 			}
 			for (const x of new Set(group)) {
-				let r = new Fraction(this.count(group, x));
+				let r = new Fraction(this.count(group, x)).mul(R);
 				if (x < 0) {
 					I = -(x + 1);
 					result.push([
 						-1,
 						I + 667,
-						`/img/u/${I}/0.png`,
+						this.uimg(I),
 						`<a target="_blank" href="/unit.html?id=${I}">${this.unit_name[I]}</a>${must}`,
 						r,
 						'',
-						rate
+						rate,
+						'104',
+						'79',
+						'style="padding:.4em" '
 					]);
 				} else {
 					I = reward_order[x];
 					result.push([
-						~~(x / 100),
-						x,
+						~~(I / 100),
+						I,
 						`/img/r/${x}.png`,
 						reward_names[x],
 						r,
 						'',
-						rate
+						rate,
+						'128',
+						'128',
+						''
 					]);
 				}
 			}
@@ -475,14 +494,13 @@ new (class extends require('./base.js') {
 			v[1] = ['#d0e0e3', '#d9d2e9', '#c9daf8', '#fce5cd'][color];
 		}
 
-		result[last_i][-2] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
+		result[last_i][5] = `<td rowSpan="${count}">${this.fmt.format(rate.valueOf() / 100)}%</td>`;
 		S += `<p>使用道具：${O['ticket'][0]}</p><img src="${O['ticket'][1]}" width="128" height="128"><br>`;
 		S += '<table class="w3-table N" style="position: relative;width:auto;margin-top:3em;"><thead><tr class="w3-black"><th colSpan=';
 		if (must_drop_rate)
 			S += '5>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th><th>實際機率</th></tr></thead><tbody>';
 		else
 			S += '4>轉蛋詳細</th></tr><tr class="w3-light-gray"><th>圖示</th><th>項目</th><th>機率</th><th>總和</th></tr></thead><tbody>';
-		
 		for (const v of result) {
 			const r = this.fmt.format(v[4].valueOf() / 100);
 			if (must_drop_rate) {
@@ -493,16 +511,16 @@ new (class extends require('./base.js') {
 				} else {
 					a = v[4].mul(must_drop_rate).valueOf() / 1000000;
 				}
-				S += `<tr style="background-color:${v[1]}"><td><img src="${v[2]}" width="128" height="128"></td><td>${v[3]}</td><td>${r}</td>${v[5]}<td>${this.fmt.format(a)}</td></tr>`;
+				S += `<tr style="background-color:${v[1]}"><td><img ${v[9]}src="${v[2]}" width="${v[7]}" height="${v[8]}"></td><td>${v[3]}</td><td>${r}%</td>${v[5]}<td>${this.fmt.format(a)}%</td></tr>`;
 			} else {
-				S += `<tr style="background-color:${v[1]}"><td><img src="${v[2]}" width="128" height="128"></td><td>${v[3]}</td><td>${r}</td>${v[5]}</tr>`;
+				S += `<tr style="background-color:${v[1]}"><td><img ${v[9]}src="${v[2]}" width="${v[7]}" height="${v[8]}"></td><td>${v[3]}</td><td>${r}%</td>${v[5]}</tr>`;
 			}
 		}
 		S += '</tbody></table><small>有*標示為每十抽必定可獲得的限定角色</small>';
 		S += `<p style="margin-top:2em;"><a href="${O['stage'][0]}">${O['stage'][1]}</a></p>`;
 		if (O['farm'])
 			S += `<table class="w3-table Y" style="width:auto">${O['farm']}</table>`;
-		S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto;margin-bottom:2em">${O['max']}</table>`;
+		S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto">${O['max']}</table>`;
 
 		return S;
 	}
@@ -529,21 +547,22 @@ new (class extends require('./base.js') {
 	}
 	gen1(u, C = 1) {
 		return C == 1 ?
-			`<td><div style="font-weight:bold">${this.unit_name[u]}</div><a class="B" href="/unit.html?id=${u}"><img src="/img/u/${u}/0.png" width="128" height="128" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>` :
-			`<td><div style="font-weight:bold" style="margin-block-start:1em;margin-block-end:1em">${this.unit_name[u]}<div style="color:red !important;font-size:0.8em">出現機率×${C}</div></div><a class="B" href="/unit.html?id={u}"><img src="/img/u/${u}/0.png" width="128" height="128" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>`;
+			`<td><div style="font-weight:bold">${this.unit_name[u]}</div><a class="B" href="/unit.html?id=${u}"><img src="${this.uimg(u)}" width="104" height="79" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>` :
+			`<td><div style="font-weight:bold" style="margin-block-start:1em;margin-block-end:1em">${this.unit_name[u]}<div style="color:red !important;font-size:0.8em">出現機率×${C}</div></div><a class="B" href="/unit.html?id={u}"><img src="${this.uimg(u)}" width="104" height="79" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>`;
 	}
 	load_unit() {
 		let line, data = this.load('cat.tsv').split('\n'), id = '';
 
 		this.unit_rarity = [];
-		this.unit_egg = [];
+		this.egg_set = new Set();
 		this.unit_name = [];
 		this.unit_desc = [];
 
 		for (let i = 1;i < data.length;++i) {
-			line = data[i];
-			this.unit_rarity.push(parseInt(line.slice(0, line.indexOf('\t'))));
-			this.unit_egg.push(line[6]);
+			line = data[i].split('\t');
+			this.unit_rarity.push(parseInt(line[0], 10));
+			if (line[6])
+				this.egg_set.add(i - 1);
 		}
 
 		data = this.load('form.tsv').split('\n');

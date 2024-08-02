@@ -56,7 +56,7 @@ window.CCC = {
 	'isSuper': function(info) {
 		const c = info.talents;
 		if (!c) return false;
-		for (let j = 0; j < 112 && c[j]; j += 14)
+		for (let j = 1; j < 113 && c[j]; j += 14)
 			if (c[j + 13] == 1)
 				return true;
 		return false;

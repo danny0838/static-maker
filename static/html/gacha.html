@@ -176,10 +176,14 @@ details {
 }
 .N img {
 	width: 5em;
-	height: 5em;
+	height: auto;
 }
 .N a {
 	text-decoration: none;
+}
+summary {
+	cursor: pointer;
+	user-select: none;
 }
 	</style>
 	<div class="topnav">
@@ -223,7 +227,7 @@ details {
 
 	<h1 style="font-size:max(12px,2.2vw);">{{{h1}}}</h1> {{{collab}}}
 
-	<img style="display: block;margin: 0 auto;max-width:min(100%,860px);height:auto;" src="{{{img}}}" width="{{{width}}}" height="{{{height}}}"> {{{contents}}} {{{history}}}
+	<img style="display: block;margin: 0 auto;width:min(95%, 860px);height:auto;" src="{{{img}}}" width="{{{width}}}" height="{{{height}}}"> {{{contents}}} {{{history}}}
 
 	<div style="display: none;" class="tooltip">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">

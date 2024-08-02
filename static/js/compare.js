@@ -2,7 +2,7 @@ var cats;
 var targets = new Set();
 var CL;
 const tbl = document.getElementById('tbl');
-const tby = tbl.firstChild.children;
+const tby = tbl.firstElementChild.children;
 const atk_mult_abs = new Set([AB_STRONG, AB_MASSIVE, AB_MASSIVES, AB_EKILL, AB_WKILL, AB_BAIL, AB_BSTHUNT, AB_S, AB_GOOD, AB_CRIT, AB_WAVE, AB_MINIWAVE, AB_MINIVOLC, AB_VOLC, AB_ATKBASE, AB_SAGE]);
 const hp_mult_abs = new Set([AB_EKILL, AB_WKILL, AB_GOOD, AB_RESIST, AB_RESISTS, AB_BSTHUNT, AB_BAIL, AB_SAGE]);
 const cat_name = document.getElementById('cat-name');
@@ -515,7 +515,7 @@ function numStrX(num) {
 }
 
 function setStat(C /* Cat */ , F /* Form */ , I /* insert index */ , L /* level */ ) {
-	useCurve(C.curve);
+	my_curve = _curves[C.info[16]];
 	tby[3].children[I].textContent = F.kb;
 	var T = numStrX(F.pre);
 	if (F.pre1)
@@ -530,7 +530,7 @@ function setStat(C /* Cat */ , F /* Form */ , I /* insert index */ , L /* level 
 		T += '遠方';
 	T += (F.atkType & ATK_RANGE) ? '範圍攻擊' : '單體攻擊';
 	tby[7].children[I].textContent = numStrT(getRes(F.cd)) + '/' + _l_f.format(F.price * 1.5) + '元';
-	if (F.lds[0] || F.ldr[0]) {
+	if (F.lds) {
 		let s = '';
 		for (let i = 0; i < F.lds.length; ++i) {
 			const x = F.lds[i];
@@ -707,7 +707,7 @@ function handleFocus() {
 
 function get_t(T) {
 	let a = [];
-	for (let i = 0; i < 112 && T[i]; i += 14)
+	for (let i = 1; i < 113 && T[i]; i += 14)
 		if (T[i + 13] != 1)
 			a.push(T[i + 1] || 1);
 	return a;
@@ -715,7 +715,7 @@ function get_t(T) {
 
 function get_s(T) {
 	let a = [];
-	for (let i = 0; i < 112 && T[i]; i += 14)
+	for (let i = 1; i < 113 && T[i]; i += 14)
 		if (T[i + 13] == 1)
 			a.push(T[i + 1] || 1);
 	return a;
@@ -726,11 +726,11 @@ function addCat(id, I, FC = 0) {
 		C = cats[id],
 		F = C.forms[FC];
 	var FL = 0;
-	if (FC > 1 && (G = C.info.talents)) {
+	if (FC > 1 && (G = C.info[10])) {
 		FL = 1;
 		M = tby[10].children[I];
 		M.style.textAlign = 'left';
-		for (let i = 0; i < 112 && G[i]; i += 14) {
+		for (let i = 1; i < 113 && G[i]; i += 14) {
 			const D = document.createElement('div');
 			if (G[i + 13] == 1) {
 				D.style.setProperty('color', TH == 'dark' ? '#ff6363' : '#c10002', 'important');
@@ -743,13 +743,13 @@ function addCat(id, I, FC = 0) {
 			M.appendChild(D);
 		}
 	}
-	M = tby[0].children[I]; // tmp
-	G = new Image(128, 128); // tmp
-	G.src = new URL(F.icon, 'https://battlecatsinfo.github.io/');
+	M = tby[0].children[I];
+	G = new Image(104, 79);
+	G.src = F.icon;
 	M.appendChild(G);
 	M.style.border = 'none';
 	const span = document.createElement('span');
-	span.lv = Math.min(C.info.maxBase + C.info.maxPlus,
+	span.lv = Math.min(C.info[4] + C.info[5],
 		(FL == 2) ? 60 : ((FC == 3) ? 60 : 50)
 	);
 	span.C = C;
@@ -765,14 +765,14 @@ function addCat(id, I, FC = 0) {
 		if (num) {
 			num = parseInt(num[0]);
 			if (num) {
-				num = Math.min(num, this.C.info.maxBase + this.C.info.maxPlus);
+				num = Math.min(num, this.C.info[4] + this.C.info[5]);
 				if (num != this.lv) {
 					let J = this.F;
 					if (this.X) {
 						J = new Form(structuredClone(J));
-						const L = this.C.info.talents;
+						const L = this.C.info[10];
 						if (this.X.checked) {
-							J.applyTalents(this.C.info, get_t(L));
+							J.applyTalents(this.C.info[10], get_t(L));
 							if (num < 30)
 								alert('提醒：開放本能升級等級需求至少為 Lv. 30');
 						}
@@ -796,9 +796,9 @@ function addCat(id, I, FC = 0) {
 	M.appendChild(span);
 	if (FL) {
 		F = new Form(structuredClone(F));
-		F.applyTalents(C.info, get_t(C.info.talents));
+		F.applyTalents(C.info[10], get_t(C.info[10]));
 		if (FL == 2) {
-			F.applySuperTalents(C.info.talents, get_s(C.info.talents));
+			F.applySuperTalents(C.info[10], get_s(C.info[10]));
 		}
 	}
 	setStat(C, F, I, span.lv);
@@ -835,13 +835,13 @@ function addCat(id, I, FC = 0) {
 			if (span.X.checked) {
 				if (span.lv < 30)
 					alert('提醒：開放本能升級等級需求至少為 Lv. 30');
-				H.applyTalents(span.C.info, get_t(span.C.info.talents));
+				H.applyTalents(span.C.info[10], get_t(span.C.info[10]));
 			}
 			if (span.Y && span.Y.checked) {
 				if (span.lv < 60)
 					alert('提醒：開放超本能等級需求至少為 Lv. 60');
 				span.textContent = span.lv;
-				H.applySuperTalents(span.C.info.talents, get_s(span.C.info.talents));
+				H.applySuperTalents(span.C.info[10], get_s(span.C.info[10]));
 			}
 			setStat(span.C, H, span.I, span.lv);
 		}
@@ -861,13 +861,13 @@ function addCat(id, I, FC = 0) {
 				if (span.X.checked) {
 					if (span.lv < 30)
 						alert('提醒：開放本能升級等級需求至少為 Lv. 30');
-					H.applyTalents(span.C.info, get_t(span.C.info.talents));
+					H.applyTalents(span.C.info[10], get_t(span.C.info[10]));
 				}
 				if (span.Y.checked) {
 					if (span.lv < 60)
 						alert('提醒：開放超本能等級需求至少為 Lv. 60');
 					span.textContent = span.lv;
-					H.applySuperTalents(span.C.info.talents, get_s(span.C.info.talents));
+					H.applySuperTalents(span.C.info[10], get_s(span.C.info[10]));
 				}
 				setStat(span.C, H, span.I, span.lv);
 			}
@@ -966,7 +966,7 @@ function cls() {
 	history.pushState({}, "", '/compare.html');
 	targets.clear();
 	for (const tr of tby) {
-		x = tr.firstChild;
+		x = tr.firstElementChild;
 		while (x != (y = tr.lastChild))
 			tr.removeChild(y);
 	}

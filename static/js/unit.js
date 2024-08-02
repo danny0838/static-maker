@@ -23,7 +23,6 @@ const modal_content = document.getElementById('modal-c');
 const modal = document.getElementById('modal');
 if (isNaN(my_id))
 	my_id = 0;
-const cat_icons = document.getElementById('cat-icons');
 const unit_content = document.getElementById('unit-content');
 const tooltip = document.getElementsByClassName('tooltip')[0];
 
@@ -1105,20 +1104,24 @@ function updateValues(form, tbl) {
 		p.append('擊退反擊');
 		specials.appendChild(p);
 	}
+	const node = chs[5].children[5];
 	if (form.lds) {
 		const nums = '①②③';
-		var s = '';
+		node.append('接觸點' + form.range);
+		node.appendChild(document.createElement('br'));
+		node.append('範圍');
+		node.appendChild(document.createElement('br'));
 		for (let i = 0; i < form.lds.length; ++i) {
 			const x = form.lds[i];
 			const y = x + form.ldr[i];
 			if (x <= y)
-				s += `${nums[i]}${x}～${y}<br>`;
+				node.append(`${nums[i]}${x}～${y}`);
 			else
-				s += `${nums[i]}${y}～${x}<br>`;
+				node.append(`${nums[i]}${y}～${x}`);
+			node.appendChild(document.createElement('br'));
 		}
-		chs[5].children[5].innerHTML = `接觸點${form.range}<br>範圍<br>${s.slice(0,s.length-4)}`;
 	} else {
-		chs[5].children[5].textContent = form.range;
+		node.textContent = form.range;
 	}
 	KB.textContent = form.kb.toString();
 	CD.textContent = numStrT(getRes(form.cd));
@@ -1232,11 +1235,11 @@ function renderForm(form, lvc_text, _super = false, hide = false) {
 		const tbody = document.createElement('tbody');
 		tbl.classList.add('w3-table', 'w3-centered');
 		tbl.style.maxWidth = 'min(80%, 1500px)';
-		const icon = new Image(128, 128);
+		const icon = new Image(104, 79);
 		icon.src = form.icon;
-		icon.style.position = 'absolute';
-		icon.style.left = '-6px';
-		icon.style.top = '-21px';
+		//icon.style.position = 'absolute';
+		//icon.style.left = '-6px';
+		//icon.style.top = '-21px';
 		icon.style.setProperty('background-color', '#0000', 'important');
 		let tr = document.createElement('tr');
 		tbody.appendChild(tr);
@@ -1635,7 +1638,16 @@ function renderForm(form, lvc_text, _super = false, hide = false) {
 	const tbodytr10 = document.createElement('tr');
 	const tbodytr11 = document.createElement('tr');
 	const tbodytr12 = document.createElement('tr');
-	level_text.innerHTML = lvc_text + (hide ? '' : (my_cat.forms[form.lvc].desc || ''));
+	if (lvc_text) {
+		level_text.append(lvc_text);
+		if (!hide) {
+			level_text.appendChild(document.createElement('br'));
+			for (const F of form.desc.split('|')) {
+				level_text.append(F);
+				level_text.appendChild(document.createElement('br'));
+			}
+		}
+	}
 	makeTd(theadtr, '等級').classList.add('f');
 	{
 		let I = _super ? 6 : 1;
@@ -2452,7 +2464,7 @@ function renderCombos() {
 				}
 				for (let c = 0; c < units.length; c += 2) {
 					const td = document.createElement('td');
-					const img = new Image();
+					const img = new Image(104, 79);
 					const a = document.createElement('a');
 					a.href = './unit.html?id=' + units[c].toString();
 					img.src = `/img/u/${units[c]}/${units[c + 1]}.png`;
@@ -2568,15 +2580,19 @@ function renderUintPage() {
 		renderCombos();
 		return;
 	}
+	const cat_icons = document.getElementById('cat-icons');
+	cat_icons.style.display = 'flex';
+	cat_icons.style.justifyContent = 'center';
+	cat_icons.style.gap = '1em';
 	for (let form of my_cat.forms) {
-		const img = new Image();
+		const img = new Image(104, 79);
 		img.src = form.icon;
 		cat_icons.appendChild(img);
 	}
 	const zh = ['一', '二', '三'];
 	for (let i = 0; i < my_cat.forms.length; ++i) {
 		if (i == 3) break;
-		const tbl = renderForm(my_cat.forms[i], zh[i] + '階：<br>');
+		const tbl = renderForm(my_cat.forms[i], zh[i] + '階：');
 		tables.push([`${zh[i]}階數值表格`, tbl]);
 		mkTool(tbl);
 	}
@@ -2601,7 +2617,7 @@ function renderUintPage() {
 		if (my_cat.forms.length == 4) {
 			const F = new Form(structuredClone(my_cat.forms[3]));
 			F.applyTalents(my_cat.info[10], custom_talents);
-			tf4_tbl = renderForm(F, '四階：<br>', true);
+			tf4_tbl = renderForm(F, '四階：', true);
 			tables.push(['四階+本能數值表格', tf4_tbl]);
 			mkTool(tf4_tbl);
 		}
@@ -2904,38 +2920,6 @@ function xpgraph() {
 	modal.style.display = 'block';
 }
 
-function ImgCut() {
-	modal_content.textContent = '';
-	const s = t3str(my_id);
-	for (let i = 0; i < my_cat.forms.length; ++i) {
-		let imgfile;
-		let cutfile;
-		const url = new URL('/anim/imgcut.html', location.href);
-		if (my_cat.forms[i].icon.startsWith('/img/s')) {
-			const c = my_cat.forms[i].icon.slice(7, 10);
-			url.searchParams.set('imgfile', `/img/s/${c}/${c}_m.png`);
-			url.searchParams.set('cutfile', `/img/s/${c}/${c}_m.imgcut`);
-		} else {
-			const f = 'fcsu' [i];
-			url.searchParams.set('imgfile', `/img/u/${s}/${f}/${s}_${f}.png`);
-			url.searchParams.set('cutfile', `/data/unit/${s}/${f}/${s}_${f}.imgcut`);
-		}
-		const p = document.createElement('button');
-		const a = document.createElement('a');
-		p.style.display = 'block';
-		p.style.margin = '0 auto';
-		p.classList.add('w3-btn', ['w3-deep-purple', 'w3-teal', 'w3-green'][i]);
-		p.style.marginBottom = '1em';
-		a.href = url.href;
-		a.textContent = ['一階', '二階', '三階'][i];
-		a.style.textDecoration = 'none';
-		a.style.setProperty('color', 'white', 'important');
-		p.appendChild(a);
-		modal_content.appendChild(p);
-	}
-	modal.style.display = 'block';
-}
-
 function savePNG(tbl, e) {
 	tbl[1].style.margin = '0';
 	domtoimage.toBlob(tbl[1]).then(function(blob) {
@@ -3119,12 +3103,6 @@ loadCat(my_id)
 			});
 			localStorage.setItem('star-cats', JSON.stringify(oldList));
 		};
-
-		let a = document.createElement('a');
-		a.classList.add('w3-bar-item');
-		a.textContent = 'ImgCut';
-		a.onclick = ImgCut;
-		abar.appendChild(a);
 
 		a = document.createElement('a');
 		a.classList.add('w3-bar-item');

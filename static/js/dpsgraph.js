@@ -66,15 +66,14 @@ class FormDPS {
 
 		this.t_lv = [];
 		this.s_lv = [];
-		if (this.F.lvc >= 2 && C.info.talents) {
-			for (let i = 0; i < 112; i += 14) {
-				if (!C.info.talents[i]) break;
-				((C.info.talents[i + 13] == 1) ? this.s_lv : this.t_lv).push(C.info.talents[i + 1] || 1);
-				talent_types.add(C.info.talents[i]);
+		if (this.F.lvc >= 2 && C.info[10]) {
+			for (let i = 1; i < 113; i += 14) {
+				if (!C.info[10][i]) break;
+				((C.info[10][i + 13] == 1) ? this.s_lv : this.t_lv).push(C.info[10][i + 1] || 1);
+				talent_types.add(C.info[10][i]);
 			}
 		}
 		this.is_normal = !((this.F.atkType & ATK_LD) || (this.F.atkType & ATK_OMNI));
-		this.curve = C.curve;
 		this.info = C.info;
 
 		let x = document.createElement('h3');
@@ -101,7 +100,7 @@ class FormDPS {
 		}
 		this.B.dom.appendChild(x);
 
-		if (this.F.lds[0] || this.F.ldr[0]) {
+		if (this.F.lds) {
 			const nums = '①②③';
 			obj = '';
 			for (let i = 0; i < this.F.lds.length; ++i) {
@@ -135,8 +134,8 @@ class FormDPS {
 		if (this.s_lv.length || this.F.lvc == 3)
 			x = this.lv_c.value = 60;
 		else
-			this.lv_c.value = x = Math.min(this.info.maxBase + this.info.maxPlus, [110, 50, 130, 120, 50, 50][this.info.rarity]);
-		useCurve(this.curve);
+			this.lv_c.value = x = Math.min(this.info[4] + this.info[5], [110, 50, 130, 120, 50, 50][this.info[0]]);
+		my_curve = _curves[this.info[16]];
 		this.lvm = getLevelMulti(x);
 		this.lv_c.onblur = function() {
 			let num = this.value.match(/\d+/);
@@ -149,8 +148,8 @@ class FormDPS {
 				this.value = '請輸入正整數！';
 				return;
 			}
-			this.value = num = Math.min(self.info.maxBase + self.info.maxPlus, num);
-			useCurve(self.curve);
+			this.value = num = Math.min(self.info[4] + self.info[5], num);
+			my_curve = _curves[self.info[16]];
 			self.lvm = getLevelMulti(num);
 			self.render();
 		}
@@ -365,10 +364,10 @@ class FormDPS {
 			62: "小波動",
 			65: "小烈波",
 		};
-		if (this.F.lvc >= 2 && this.info.talents) {
-			for (let i = 0; i < 112; i += 14) {
-				if (!this.info.talents[i]) break;
-				obj = talent_map[this.info.talents[i]];
+		if (this.F.lvc >= 2 && this.info[10]) {
+			for (let i = 1; i < 113; i += 14) {
+				if (!this.info[10][i]) break;
+				obj = talent_map[this.info[10][i]];
 				if (obj) {
 					const div = document.createElement('p');
 					let p = document.createElement('label');
@@ -380,14 +379,14 @@ class FormDPS {
 					p.style.paddingRight = '0';
 					p.type = 'range';
 					p.min = 0;
-					p.value = p.max = (this.info.talents[i + 1] || 1).toString();
+					p.value = p.max = (this.info[10][i + 1] || 1).toString();
 					p.step = 1;
 					p.oninput = function() {
 						let tal_cnt = 0;
 						let sup_cnt = 0;
 						for (let j = 0;; j += 14) {
 							if (j == i) {
-								if (self.info.talents[j + 13] == 1) {
+								if (self.info[10][j + 13] == 1) {
 									self.s_lv[sup_cnt] = parseInt(this.value);
 								} else {
 									self.t_lv[tal_cnt] = parseInt(this.value);
@@ -395,7 +394,7 @@ class FormDPS {
 								self.render();
 								return;
 							}
-							if (self.info.talents[j + 13] == 1)
+							if (self.info[10][j + 13] == 1)
 								++sup_cnt;
 							else
 
@@ -579,8 +578,8 @@ class FormDPS {
 		let x, Xs;
 		this.atks = [F.atk];
 
-		if (this.info.talents && F.lvc >= 2)
-			if (F.applyTalents(this.info, this.t_lv)) F.applySuperTalents(this.info.talents, this.s_lv);
+		if (this.info[10] && F.lvc >= 2)
+			if (F.applyTalents(this.info[10], this.t_lv)) F.applySuperTalents(this.info[10], this.s_lv);
 
 		if (F.atk1) this.atks.push(F.atk1);
 		if (F.atk2) this.atks.push(F.atk2);
