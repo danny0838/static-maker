@@ -477,7 +477,6 @@ loadAllCats().then(s => {
 		CL.appendChild(o);
 	}
 	document.getElementById('loader').style.display = 'none';
-	document.getElementById('loader-text').style.display = 'none';
 	let X = (new URL(location.href)).searchParams.get('targets');
 	if (X) {
 		for (const y of X.split(',')) {

@@ -19,7 +19,6 @@ const sources = [
 	'unit.html',
 	'enemy.html',
 	'treasure_list.html',
-	'treasure_settings.html',
 	'help.html',
 	'search.html',
 	'cat_dictionary.html',

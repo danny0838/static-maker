@@ -48,6 +48,7 @@ $ node foo.js
 * `material.js`: produces `material.js`
 * `crown.js`: produces `crown.js`
 * `gamatoto.js`: produces `gamatoto.html`
+* `esearch.js`: produces `esearch.html`
 
 ## Publish to Github Pages
 

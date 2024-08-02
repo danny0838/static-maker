@@ -93,7 +93,6 @@ function add_unit(c) {
 loadAllCats().then(_cs => {
 	cats = _cs;
 	document.getElementById('loader').style.display = 'none';
-	document.getElementById('loader-text').style.display = 'none';
 	main.style.display = 'block';
 	for (let cat of cats) {
 		const TF = cat.forms[2];

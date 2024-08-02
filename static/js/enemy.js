@@ -34,7 +34,6 @@ var mult = document.getElementById('mult'),
 	];
 if (isNaN(my_id))
 	my_id = 0;
-my_id += 2;
 
 function hClick(event) {
 	event.preventDefault();
@@ -391,11 +390,7 @@ function search_for() {
 		db = e.target.result;
 		db.transaction("map").objectStore("map").get(-1).onsuccess = function(e) {
 			char_groups = e.target.result;
-			if (char_groups && char_groups['ver'] == {
-					{
-						stage
-					}
-				})
+			if (char_groups && char_groups['ver'] == {{{stage-ver}}})
 				really_search();
 			else
 				load_all();
@@ -414,7 +409,7 @@ function namefor(str) {
 
 function really_search() {
 	let previous_td, previous_mc, previous_td2, previous_sm;
-	const target = (my_id - 2).toString(36);
+	const target = my_id.toString(36);
 	let tbl = document.createElement('table');
 	tbl.classList.add('w3-table', 'w3-centered', 'Co');
 	let tr = document.createElement('tr');
@@ -489,7 +484,6 @@ loadEnemy(my_id)
 	.then(e => {
 		E = e;
 		document.getElementById('loader').style.display = 'none';
-		document.getElementById('loader-text').style.display = 'none';
 		document.getElementById('main').style.display = 'block';
 		if (my_mult) {
 			my_mult = parseInt(my_mult);
@@ -515,7 +509,7 @@ loadEnemy(my_id)
 		mult.textContent = '倍率:' + my_mult.toString() + '%';
 		mult_atk.textContent = '攻擊倍率:' + atk_mag.toString() + '%';
 		st_mag.textContent = '★倍率:' + stageMag.toString() + '%';
-		const title = [E.name + E.ts, E.jp_name].filter(x => x).join('/') || '?';
+		const title = [E.name, E.jp_name].filter(x => x).join('/') || '?';
 		document.title = title;
 		document.getElementById('e-id').textContent = title;
 		var traits = [];
@@ -570,14 +564,12 @@ loadEnemy(my_id)
 		X += (E.atkType & ATK_RANGE) ? '範圍攻擊' : '單體攻擊';
 		if (E.atkType & ATK_KB_REVENGE)
 			X += '・擊退反擊';
-		const lds = E.lds;
-		const ldr = E.ldr;
-		if (lds[0] || ldr[0]) {
+		if (E.lds) {
 			const nums = '①②③';
 			var s = '';
-			for (let i = 0; i < lds.length; ++i) {
-				const x = lds[i];
-				const y = x + ldr[i];
+			for (let i = 0; i < E.lds.length; ++i) {
+				const x = E.lds[i];
+				const y = x + E.ldr[i];
 				if (x <= y)
 					s += `${nums[i]}${x}～${y}`;
 				else
@@ -612,8 +604,7 @@ loadEnemy(my_id)
 		specials.append(X);
 		specials.appendChild(document.createElement('br'));
 		X = chs[0].children[0].children[0];
-		const ss = t3str(E.id - 2);
-		X.src = '/img/e/' + ss + '/enemy_icon_' + ss + '.png';
+		X.src = `/img/e/${E.i}/0.png`;
 		chs[2].children[3].textContent = numStrT(E.backswing);
 		chs[2].children[5].textContent = numStrT(E.tba);
 		chs[2].children[7].textContent = numStrT(E.attackF);
@@ -629,11 +620,15 @@ loadEnemy(my_id)
 		chs[0].children[6].textContent = E.speed;
 		chs[1].children[1].textContent = E.kb;
 		calc();
-		chs[4].children[1].innerHTML = E.desc;
+		X = chs[4].children[1];
+		for (const s of E.desc.split('|')) {
+			X.append(s);
+			X.appendChild(document.createElement('br'));
+		}
 		createAbIcons();
 		document.getElementById('search-appear').onclick = search_for;
-		X = t3str(my_id - 2);
-		document.getElementById('open-imgcut').href = `/anim/imgcut.html?cutfile=$/data/enemy/${X}/${X}_e.imgcut&imgfile=/img/e/${X}/${X}_e.png`;
+
+		document.getElementById('open-imgcut').href = `/anim/imgcut.html?cutfile=$/img/${E.i}/c&imgfile=/img/e/${E.i}/0.png`;
 		document.getElementById('open-anim').href = `/anim/anim.html?id=-${my_id - 1}`;
 		document.getElementById('fandom').href = 'https://battle-cats.fandom.com/wiki/' + E.fandom;
 		mult.addEventListener('focus', hfocus);

@@ -3095,7 +3095,6 @@ loadCat(my_id)
 		lvMax = Math.min(my_cat.info[4] + my_cat.info[5], 50) / 10;
 		renderUintPage();
 		document.getElementById('loader').style.display = 'none';
-		document.getElementById('loader-text').style.display = 'none';
 		document.getElementById('main').style.display = 'block';
 		document.title = cat_names.replaceAll(' → ', ' ') + ' - 貓咪資訊';
 		const abar = document.getElementById('abar');

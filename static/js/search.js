@@ -264,7 +264,6 @@ loadAllCats().then(_cats => {
 	const params = new URLSearchParams(location.search);
 
 	document.getElementById('loader').style.display = 'none';
-	document.getElementById('loader-text').style.display = 'none';
 	document.getElementById('main').style.display = 'block';
 
 	for (let i = 0; i < cats_old.length; ++i) {

@@ -75,9 +75,9 @@ function renderTable(forms, page = 1) {
 	}
 	for (let i = 0; i < display_forms.length; ++i) {
 		const tr = document.createElement('tr');
-		const theForm = display_forms[i][1];
-		const texts = [theForm.id - 2, '', theForm.name ? theForm.name : (theForm.jp_name ? theForm.jp_name : '?'), ~~theForm.gethp(), ~~theForm.getatk(),
-			~~theForm.getdps(), theForm.kb, theForm.range, numStrT(theForm.attackF).replace('秒', '秒/下'), theForm.speed, theForm.earn, numStr(display_forms[i][0])
+		const F = display_forms[i][1];
+		const texts = [F.i, '', F.name || F.jp_name || '?', ~~F.gethp(), ~~F.getatk(),
+			~~F.getdps(), F.kb, F.range, numStrT(F.attackF).replace('秒', '秒/下'), F.speed, F.earn, numStr(display_forms[i][0])
 		];
 		for (let j = 0; j < texts.length; ++j) {
 			const e = document.createElement('td');
@@ -86,9 +86,8 @@ function renderTable(forms, page = 1) {
 		}
 		const a = document.createElement('a');
 		const img = new Image(64, 64);
-		const ss = t3str(theForm.id - 2);
-		img.src = '/img/e/' + ss + '/enemy_icon_' + ss + '.png';
-		a.href = './enemy.html?id=' + (theForm.id - 2).toString();
+		img.src = `/img/e/${F.i}/0.png`;
+		a.href = './enemy.html?id=' + F.i;
 		a.appendChild(img);
 		tr.children[1].appendChild(a);
 		tbody.appendChild(tr);
@@ -193,7 +192,6 @@ loadAllEnemies()
 		const params = new URLSearchParams(location.search);
 
 		document.getElementById('loader').style.display = 'none';
-		document.getElementById('loader-text').style.display = 'none';
 		document.getElementById('main').style.display = 'block';
 
 		const Q = params.get('q');

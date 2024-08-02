@@ -844,7 +844,6 @@ class FormDPS {
 loadAllCats().then(s => {
 	let o;
 	document.getElementById('loader').style.display = 'none';
-	document.getElementById('loader-text').style.display = 'none';
 	cats = s;
 	for (let i = 0; i < s.length; ++i) {
 		o = document.createElement('option');
