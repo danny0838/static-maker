@@ -3106,7 +3106,7 @@ loadCat(my_id)
 
 		a = document.createElement('a');
 		a.classList.add('w3-bar-item');
-		a.href = '/anim/anim.html?id=' + my_id.toString();
+		a.href = '/anim.html?id=' + my_id.toString();
 		a.textContent = '檢視動畫';
 		a.target = '_black';
 		abar.appendChild(a);

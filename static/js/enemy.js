@@ -629,7 +629,7 @@ loadEnemy(my_id)
 		document.getElementById('search-appear').onclick = search_for;
 
 		document.getElementById('open-imgcut').href = `/anim/imgcut.html?cutfile=$/img/${E.i}/c&imgfile=/img/e/${E.i}/0.png`;
-		document.getElementById('open-anim').href = `/anim/anim.html?id=-${my_id - 1}`;
+		document.getElementById('open-anim').href = `/anim.html?id=-${my_id - 1}`;
 		document.getElementById('fandom').href = 'https://battle-cats.fandom.com/wiki/' + E.fandom;
 		mult.addEventListener('focus', hfocus);
 		mult.addEventListener('blur', function() {
