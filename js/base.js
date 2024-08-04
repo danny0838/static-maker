@@ -1,4 +1,4 @@
-const Handlebars = require('Handlebars');
+const Handlebars = require('handlebars');
 const fs = require('node:fs');
 const resolve = require('node:path').resolve;
 
