@@ -7,29 +7,29 @@ var def_lv, plus_lv, my_curve, _info, unit_orbs, orb_massive = 0,
 
 const
 	// attack types
-	ATK_SINGLE = 1,
-	ATK_RANGE = 2,
-	ATK_LD = 4,
-	ATK_OMNI = 8,
-	ATK_KB_REVENGE = 16,
+	ATK_SINGLE = 1,      // 單體攻擊
+	ATK_RANGE = 2,       // 範圍攻擊
+	ATK_LD = 4,          // 遠距攻擊
+	ATK_OMNI = 8,        // 全方位攻擊
+	ATK_KB_REVENGE = 16, // 擊退反擊(非官方)
 
 	// traits
-	TB_RED = 1,
-	TB_FLOAT = 2,
-	TB_BLACK = 4,
-	TB_METAL = 8,
-	TB_ANGEL = 16,
-	TB_ALIEN = 32,
-	TB_ZOMBIE = 64,
-	TB_RELIC = 128,
-	TB_WHITE = 256,
-	TB_EVA = 512,
-	TB_WITCH = 1024,
-	TB_DEMON = 2048,
-	TB_INFN = 4096,
-	TB_BEAST = 8192,
-	TB_BARON = 16384,
-	TB_SAGE = 32768,
+	TB_RED = 1,          // 紅色敵人
+	TB_FLOAT = 2,        // 飄浮敵人
+	TB_BLACK = 4,        // 黑色敵人
+	TB_METAL = 8,        // 鋼鐵敵人
+	TB_ANGEL = 16,       // 天使敵人
+	TB_ALIEN = 32,       // 異星戰士
+	TB_ZOMBIE = 64,      // 不死生物
+	TB_RELIC = 128,      // 古代種
+	TB_WHITE = 256,      // 無屬性敵人
+	TB_EVA = 512,        // 使徒
+	TB_WITCH = 1024,     // 魔女
+	TB_DEMON = 2048,     // 惡魔
+	TB_INFN = 4096,      // 道場塔
+	TB_BEAST = 8192,     // 超獸
+	TB_BARON = 16384,    // 超生命體
+	TB_SAGE = 32768,     // 超賢者
 
 	// immunities
 	IMU_WAVE = 1,
