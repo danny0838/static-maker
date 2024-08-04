@@ -7,48 +7,39 @@ Source code for [battlecatsinfo.github.io](https://github.com/battlecatsinfo/bat
 static-maker use [Node.js](https://nodejs.org/) to generate static files.
 
 ```sh
-$ git clone "https://github.com/battlecatsinfo/static-maker.git"
-$ npm install
-$ mkdir _out
-$ cd out
 $ git clone "https://github.com/battlecatsinfo/battlecatsinfo.github.io"
+$ npm install
 ```
-
-## Running the local server
-
-```bash
-$ node server.js # or npm start
-$ node.server.js --verbose
-```
-
-Note: To display images successfully, you may need to clone https://github.com/battlecatsinfo/img to `static-maker/img/`.
 
 ## Build
 
 Use Node.js to run build scripts.
 
 ```sh
-$ node js/foo.js
+$ mkdir -p _out
+$ node js/copy-assets.js  # copy files at `static/` folder.
+$ node js/copy-data.js  # copy files at `data/` folder.
+$ node js/combo.js  # produces `combos.html`.
+$ node js/rank.js  # produces `rank.html`.
+$ node js/medal.js  # produces `medal.html`
+$ mkdir -p _out/collab
+$ node js/collab.js  # produces `collabs.html`, `collab/*`
+$ mkdir -p _out/gacha
+$ node js/gacha.js  # produces `gachas.html`, `gacha/*`
+$ node js/material.js  # produces `material.js`
+$ node js/crown.js  # produces `crown.js`
+$ node js/gamatoto.js  # produces `gamatoto.html`
+$ node js/esearch.js  # produces `esearch.html`
 ```
 
-or
+## Running the local server
 
 ```sh
-$ cd js
-$ node foo.js
+$ node server.js # or npm start
+$ node.server.js --verbose
 ```
 
-* `copy-assets.js`: copy files at `staic-maker/static/` folder.
-* `copy-data.js`: copy files at `static-maker/data/` folder.
-* `combo.js`: produces `combos.html`.
-* `rank.js`: produces `rank.html`.
-* `medal.js`: produces `medal.html`
-* `collab.js`: produces `collabs.html`, `collab/`
-* `gacha.js`: produces `gachas.html`, `gacha/`
-* `material.js`: produces `material.js`
-* `crown.js`: produces `crown.js`
-* `gamatoto.js`: produces `gamatoto.html`
-* `esearch.js`: produces `esearch.html`
+Note: To display images successfully, you may need to clone https://github.com/battlecatsinfo/img to `img/`.
 
 ## Coding style
 
