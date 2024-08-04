@@ -75,3 +75,7 @@ $ git push
 * Stage schedule(Taiwan): https://forum.gamer.com.tw/C.php?bsn=23772&snA=20534
 
 ※ All resources are reproduced with the permission of the author
+
+## Discord Server
+
+https://discord.gg/A9gZeDu2mv
