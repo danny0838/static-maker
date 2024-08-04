@@ -284,17 +284,17 @@ name_search.oninput = function() {
 		if (x < 48 || x > 57)
 			digit = false;
 	}
-	var s = cats.slice(2);
 	const results = [];
+	const clone = [...cats];
 	if (digit) {
 		let x = parseInt(search);
-		if (x < cats.length) {
-			results.push([1, s[x]]);
-			s.splice(x, 1);
+		if (x < clone.length) {
+			results.push([1, clone[x]]);
+			clone[x] = {'name': '', 'jp_name': ''};
 		}
 	}
-	for (let C of s)
-		if ((C.name && C.name.includes(search) || (C.jp_name && C.jp_name.includes(search))))
+	for (let C of clone)
+		if (C.name.includes(search) || C.jp_name.includes(search))
 			results.push([1, C]);
 	renderTable(results);
 }
