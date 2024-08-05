@@ -3,12 +3,16 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{{{name}}}合作活動</title>
+    <title>{{names.[0]}}合作活動</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="''' + names + ''' | 貓咪大戰爭中文資訊網站">
+    <meta name="description" content="{{names.[0]}} | 貓咪大戰爭中文資訊網站">
     <meta property="og:site_name" content="battlecatsinfo.github.io">
-    <meta property="og:title" content="{{{name}}}合作活動">
-    <meta property="og:description" content="{{{name}}}合作活動 | 貓咪大戰爭中文資訊網站"> {{{img1}}} {{{favicon}}}
+    <meta property="og:title" content="{{names.[0]}}合作活動">
+    <meta property="og:description" content="{{names.[0]}}合作活動 | 貓咪大戰爭中文資訊網站">
+    {{#if collab.img}}
+    <meta property="og:image" content="{{collab.img}}">
+    {{/if}}
+    {{{favicon}}}
     <link rel="stylesheet" type="text/css" href="/w3.css">
 </head>
 <style>
@@ -62,9 +66,91 @@ a:hover {
 
 <body>
     {{{nav-bar}}}
-    <h1 style="font-size:1.5em;text-align:center;margin: 1em;">{{{name-br}}}</h1> {{{img2}}}
+    <h1 style="font-size:1.5em;text-align:center;margin: 1em;">
+        {{#each names}}
+        {{this}}<br>
+        {{/each}}
+    </h1>
+    {{#if collab.img}}
+    <img style="display: block;margin: 0 auto;max-width: 100%;" src="{{collab.img}}">
+    {{/if}}
     <div class="MC">
-        {{{C}}}
+        {{#if collab.pools}}
+        <h2>合作限定轉蛋</h2>
+        {{#each pools}}
+        <a style="margin-left:1em;text-align:center;" href="/gacha/{{this.path}}">{{this.tw-name}}</a>
+        <img class="I" src="{{this.img}}" width="{{this.width}}" height="{{this.height}}" loading="lazy">
+        {{/each}}
+        {{/if}}
+        {{#if collab.stamp}}
+        <h2>登入獎章</h2>
+        {{#each collab.stamp}}
+        <a style="margin-left:1em;" href="/unit.html?id={{this}}"><img width="128" height="128" loading="lazy" src="/img/u/{{this}}/0.png"></a>
+        {{/each}}
+        {{/if}}
+        {{#if collab.other}}
+        <h2>其他獲取方式的貓咪</h2>
+        {{#each collab.other}}
+        <a style="margin-left:1em;" href="/unit.html?id={{this}}"><img width="128" height="128" loading="lazy" src="/img/u/{{this}}/0.png"></a>
+        {{/each}}
+        {{/if}}
+        {{#if collab.enemies}}
+        <h2>敵人</h2>
+        <div style="margin-left:1em;">
+        {{#each collab.enemies}}
+            <a href="/enemy.html?id={{this}}"><img src="/img/e/{{this}}/i.png" width="64" height="64" loading="lazy"></a>
+        {{/each}}
+        </div>
+        {{/if}}
+        {{#if collab.stages}}
+        <h2>關卡</h2>
+        <table style="margin-left:1em;" class="w3-table-all w3-centered">
+            <thead>
+                <tr>
+                    <th>名稱</th>
+                    <th>小關數</th>
+                    <th>1冠</th>
+                    <th>2冠</th>
+                    <th>3冠</th>
+                    <th>4冠</th>
+                    <th>獎勵</th>
+                  </tr>
+            </thead>
+            <tbody>
+            {{#each stages as |stage|}}
+                <tr>
+                    <td><a href="/stage.html?s={{stage.stage}}" target="_blank">{{stage.name}}</a></td>
+                    <td>{{stage.len}}</td>
+                    <td>{{stage.stars.[0]}}</td>
+                    <td>{{stage.stars.[1]}}</td>
+                    <td>{{stage.stars.[2]}}</td>
+                    <td>{{stage.stars.[3]}}</td>
+                    <td>
+                    {{~#each stage.rewards as |reward|~}}
+                    {{~#ifCond reward.type '==' 'u'~}}
+                    <a href="/unit.html?id={{reward.id}}"><img class="R" width="128" height="128" loading="lazy" src="/img/u/{{reward.id}}/0.png"></a>
+                    {{~/ifCond~}}
+                    {{~#ifCond reward.type '==' 't'~}}
+                    <a href="/unit.html?id={{reward.id}}"><img class="R" width="128" height="128" loading="lazy" src="/img/u/{{reward.id}}/2.png"></a>
+                    {{~/ifCond~}}
+                    {{~#ifCond reward.type '==' 'r'~}}
+                    <img class="R" width="128" height="128" loading="lazy" src="/img/r/{{reward.id}}.png">
+                    {{~/ifCond~}}
+                    {{~/each~}}
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+        {{/if}}
+        {{#if collab.links}}
+        <h2>外部鏈結</h2>
+        <ul style="margin-left:1em;">
+        {{#each collab.links as |url title|}}
+            <li><a target="_blank" href="{{url}}">{{title}}</a></li>
+        {{/each}}
+        </ul>
+        {{/if}}
     </div>
 </body>
 
