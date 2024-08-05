@@ -161,7 +161,7 @@ new (class extends require('./base.js') {
 			const name = this.map_names[m];
 			let stars = this.map_stars[m], len = 0, st = m * 1000, rewards = '', r;
 			if (stars)
-				stars = stars.split('|'),
+				stars = stars.split(','),
 				stars = stars.map(x => `<td>${parseInt(x, 10) / 100}</td>`).join('') + '<td></td>'.repeat(4 - stars.length);
 			else
 				stars = '<td></td><td></td><td></td><td></td>';
