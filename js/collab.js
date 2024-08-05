@@ -60,7 +60,7 @@ new (class extends require('./base.js') {
 			let img1 = '', img2 = '';
 			O = C['img'];
 			if (O) {
-				img1 = '<meta property="og:image" content="' + O + '>';
+				img1 = '<meta property="og:image" content="' + O + '">';
 				img2 = '<img style="display: block;margin: 0 auto;max-width: 100%;" src="' + O + '">';
 			}
 			this.write_string(fn, this.template(collab_template, {
