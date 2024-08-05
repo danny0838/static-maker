@@ -7,7 +7,7 @@ const gEnv = JSON.parse(fs.readFileSync(resolve(__dirname, '../data/config.json'
 gEnv['favicon'] = `<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel=stylesheet type=text/css href="/dracula.css">`;
-gEnv['nav-style'] = fs.readFileSync(resolve(__dirname, '../static/css/nav-style.css'), 'utf-8');
+gEnv['nav-style'] = fs.readFileSync(resolve(__dirname, '../template/css/nav-style.css'), 'utf-8');
 
 for (const key of ['event-types', 'conditions', 'egg-set', 'eggs'])
 	gEnv[key] = JSON.stringify(gEnv[key]);
@@ -47,28 +47,28 @@ module.exports = class {
 	}
 	write_template(in_f, out_f, env, ac='') {
 		fs.writeFileSync(
-			resolve(__dirname, '../out/', out_f),
-			this.template(fs.readFileSync(resolve(__dirname, '../static/', in_f), 'utf8'), env, ac),
+			resolve(__dirname, '../_out/', out_f),
+			this.template(fs.readFileSync(resolve(__dirname, '../template/', in_f), 'utf8'), env, ac),
 			'utf8'
 		);
 	}
 	write_json(out_f, obj) {
 		fs.writeFileSync(
-			resolve(__dirname, '../out/', out_f),
+			resolve(__dirname, '../_out/', out_f),
 			JSON.stringify(obj),
 			'utf8'
 		)
 	}
 	write_string(out_f, s) {
 		return fs.writeFileSync(
-			resolve(__dirname, '../out/', out_f),
+			resolve(__dirname, '../_out/', out_f),
 			s,
 			'utf8'
 		);
 	}
 	write_raw(out_f, s) {
 		return fs.writeFileSync(
-			resolve(__dirname, '../out/', out_f),
+			resolve(__dirname, '../_out/', out_f),
 			s
 		);
 	}
@@ -80,7 +80,7 @@ module.exports = class {
 	}
 	load_a(in_f) {
 		return fs.readFileSync(
-			resolve(__dirname, '../static/', in_f),
+			resolve(__dirname, '../template/', in_f),
 			'utf8'
 		);
 	}

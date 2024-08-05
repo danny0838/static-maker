@@ -10,7 +10,6 @@ const sources = [
 	'dracula.css',
 	'dracula2.css',
 	'gh.css',
-	'icons.css',
 
 	'index.html',
 	'stage.html',
@@ -79,10 +78,8 @@ const sources = [
 	'blockly.min.js'
 ];
 const active_map = {
-	'music.html': 'music',
-	'search.html': 'search',
-	'reward_all.html': 'reward',
-	'stage2.html': 'stage',
+	'index.html': 'index',
+	'search.html': 'cat',
 	'stage.html': 'stage',
 	'stage2.html': 'stage',
 	'stage3.html': 'stage',
@@ -96,7 +93,7 @@ new (class extends require('./base.js') {
 		try {
 			last_mods = JSON.parse(fs.readFileSync(last_mods_path, 'utf-8'));
 		} catch (e) {
-			console.error(e);
+			console.error(e.message);
 			last_mods = {};
 		}
 		for (const file of sources) {
@@ -110,7 +107,7 @@ new (class extends require('./base.js') {
 			} else if (file.endsWith('.js')) {
 				base = 'js';
 			}
-			const path = resolve(__dirname, `../static/${base}/${file}`);
+			const path = resolve(__dirname, `../template/${base}/${file}`);
 			const last = fs.statSync(path).mtime.getTime();
 			if (last_mods[file] != last) {
 				console.log(`updating ${file}...`);
@@ -132,7 +129,7 @@ new (class extends require('./base.js') {
 				} else if (file.endsWith('.html')) {
 					//contents = htmlmin.minify(this.template(contents, {}));
 					last_mods[file] = last;
-					contents = this.template(contents, {});
+					contents = this.template(contents, {}, active_map[file]);
 				} else if (file.endsWith('.min.js')) {
 					// nothing todo
 					last_mods[file] = last;

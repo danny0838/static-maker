@@ -24,7 +24,7 @@ new (class extends require('./base.js') {
 		try {
 			last_mods = JSON.parse(fs.readFileSync(last_mods_path, 'utf-8'));
 		} catch (e) {
-			console.error(e);
+			console.error(e.message);
 			last_mods = {};
 		}
 
@@ -34,7 +34,7 @@ new (class extends require('./base.js') {
 			if (last_mods[file] != last) {
 				console.log(`updating ${file}...`);
 				last_mods[file] = last;
-				fs.copyFileSync(src, resolve(__dirname, '../out/', file));
+				fs.copyFileSync(src, resolve(__dirname, '../_out/', file));
 			}
 		}
 	

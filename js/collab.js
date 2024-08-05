@@ -13,13 +13,14 @@ new (class extends require('./base.js') {
 		for (const p of JSON.parse(this.load('pools.json')))
 			this.gacha_pools[p['tw-name']] = p;
 
+		const self = this;
 		Promise.all([
 			this.load_map(),
 			this.load_stage()
-		]).then((_, reject) => {
+		]).then(function (_, reject) {
 			if (reject)
-				return console.error(reject);
-			this.write_collabs();
+				throw reject;
+			self.write_collabs();
 		});
 	}
 	write_collabs() {
@@ -36,7 +37,6 @@ new (class extends require('./base.js') {
 			const
 				C = collabs[i],
 				fn = 'collab/' + to_path(C['en-name']) + '.html';
-			console.log(C['en-name']);
 			nav_menu += `<a href="${fn}">${index(i)}. ${C['tw-name']}</a>`;
 			const S = [];
 			let O = C['pools'];
@@ -45,6 +45,9 @@ new (class extends require('./base.js') {
 			O = C['stamp'];
 			if (O)
 				S.push(this.write_stamps(O));
+			O = C['buy'];
+			if (O)
+				S.push(this.write_buy(O));
 			O = C['other'];
 			if (O)
 				S.push(this.write_other(O));
@@ -71,7 +74,6 @@ new (class extends require('./base.js') {
 				'name-br': [C['tw-name'], C['jp-name'], C['en-name']].filter(x => x).join('<br>')
 			}));
 		}
-		console.log('write-menu');
 		this.write_menu(data['tw-history'], data['jp-history'], nav_menu);
 	}
 	write_menu(tw_h, jp_h, menu) {
@@ -108,12 +110,16 @@ new (class extends require('./base.js') {
 		let size, width, height, S = '<h2>合作限定轉蛋</h2>';
 		for (let p of O) {
 			p = this.gacha_pools[p];
-			size = p['size'];
-			if (size)
-				[width, height] = size.split('x');
-			else
-				width = '860', height = '240';
-			S += `<a style="margin-left:1em;text-align:center;" href="/gacha/${to_path(p['en-name'])}">${p['tw-name']}</a><img class="I" src="${['img']} width="${width}" height=${height} loading="lazy">`;
+			if (p) {
+				size = p['size'];
+				if (size)
+					[width, height] = size.split('x');
+				else
+					width = '860', height = '240';
+				S += `<a style="margin-left:1em;text-align:center;" href="/gacha/${to_path(p['en-name'])}">${p['tw-name']}</a><img class="I" src="${['img']} width="${width}" height=${height} loading="lazy">`;
+			} else {
+				console.warn('Not found', p);
+			}
 		}
 		return S;
 	}
@@ -126,6 +132,12 @@ new (class extends require('./base.js') {
 	}
 	write_other(O) {
 		let S = '<h2>其他獲取方式的貓咪</h2>';
+		for (const u of O)
+			S += `<a style="margin-left:1em;" href="/unit.html?id=${u}"><img width="128" height="128" loading="lazy" src="/img/u/${u}/0.png"></a>`;
+		return S;
+	}
+	write_buy(O) {
+		let S = '<h2>課金購買貓咪</h2>';
 		for (const u of O)
 			S += `<a style="margin-left:1em;" href="/unit.html?id=${u}"><img width="128" height="128" loading="lazy" src="/img/u/${u}/0.png"></a>`;
 		return S;

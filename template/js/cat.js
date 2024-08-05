@@ -1274,7 +1274,7 @@ class Enemy {
 		return this.ab.hasOwnProperty(i);
 	}
 	getid() {
-		return this.id;
+		return this.i;
 	}
 	hasres() {
 		return 0;
@@ -1445,7 +1445,7 @@ async function loadCat(id) {
 		var req = indexedDB.open("db", C_VER);
 		req.onupgradeneeded = onupgradeneeded, req.onsuccess = function(e) {
 			const db = e.target.result;
-			db.transaction(["cats"], "readwrite").objectStore("cats").get(id).onsuccess = function(e) {
+			db.transaction(["cats"]).objectStore("cats").get(id).onsuccess = function(e) {
 				e = e.target.result;
 				if (e)
 					return resolve(new Cat(e));
@@ -1475,7 +1475,7 @@ async function loadEnemy(id) {
 		var req = indexedDB.open("db", C_VER);
 		req.onupgradeneeded = onupgradeneeded, req.onsuccess = function(e) {
 			const db = e.target.result;
-			db.transaction(["enemy"], "readwrite").objectStore("enemy").get(id).onsuccess = function(e) {
+			db.transaction(["enemy"]).objectStore("enemy").get(id).onsuccess = function(e) {
 				e = e.target.result;
 				if (e) return resolve(new Enemy(e));
 
@@ -1501,10 +1501,10 @@ async function loadAllEnemies() {
 		var req = indexedDB.open("db", C_VER);
 		req.onupgradeneeded = onupgradeneeded, req.onsuccess = function(e) {
 			const db = e.target.result;
-			db.transaction(["enemy"], "readwrite").objectStore("enemy").get(651).onsuccess = function(e) {
+			db.transaction(["enemy"]).objectStore("enemy").get(651).onsuccess = function(e) {
 				if (e.target.result) {
 					let es = new Array({{{num-enemies}}});
-					db.transaction(["enemy"], "readwrite").objectStore("enemy").openCursor().onsuccess = function(e) {
+					db.transaction(["enemy"]).objectStore("enemy").openCursor().onsuccess = function(e) {
 						if (e = e.target.result) {
 							es[e.value.i] = new Enemy(e.value);
 							e.continue();
@@ -1533,10 +1533,10 @@ async function loadAllCats() {
 		var req = indexedDB.open("db", C_VER);
 		req.onupgradeneeded = onupgradeneeded, req.onsuccess = function(e) {
 			const db = e.target.result;
-			db.transaction(["cats"], "readwrite").objectStore("cats").get(717).onsuccess = function(e) {
+			db.transaction(["cats"]).objectStore("cats").get(717).onsuccess = function(e) {
 				if (e.target.result) {
 					let cats = new Array({{{num-cats}}});
-					db.transaction(["cats"], "readwrite").objectStore("cats").openCursor().onsuccess = function(e) {
+					db.transaction(["cats"]).objectStore("cats").openCursor().onsuccess = function(e) {
 						if (e = e.target.result) {
 							cats[e.value.i] = new Cat(e.value);
 							e.continue();

@@ -1548,17 +1548,17 @@ function renderForm(form, lvc_text, _super = false, hide = false) {
 		return tbl;
 	}
 	let x;
-	if (level_count == 2 && info[8]) {
-		const fruits = info[8].split('|');
+	if (level_count == 2 && my_cat.info[8]) {
+		const fruits = my_cat.info[8].split('|');
 		const container = document.createElement('table');
 		tables.push(['進化素材(三階)', container]);
 		mkTool(container);
 		container.classList.add('.w3-table', 'w3-centered', 'fruit', 'w3-card-4');
-		if (info[14]) {
+		if (my_cat.info[14]) {
 			const tr = document.createElement('tr');
 			const td = document.createElement('td');
 			td.colSpan = fruits.length;
-			td.innerHTML = info[14];
+			td.innerHTML = my_cat.info[14];
 			td.style.textAlign = 'center';
 			tr.appendChild(td);
 			container.appendChild(tr);
@@ -1585,17 +1585,17 @@ function renderForm(form, lvc_text, _super = false, hide = false) {
 		container.appendChild(tr0);
 		container.appendChild(tr1);
 		unit_content.appendChild(container);
-	} else if (form.lvc == 3 && info[9] != undefined) {
+	} else if (form.lvc == 3 && my_cat.info[9] != undefined) {
 		const container = document.createElement('table');
-		const fruits = info[9].split('|');
+		const fruits = my_cat.info[9].split('|');
 		tables.push(['進化素材(四階)', container]);
 		mkTool(container);
 		container.classList.add('.w3-table', 'w3-centered', 'fruit', 'w3-card-4');
-		if (info[15]) {
+		if (my_cat.info[15]) {
 			const tr = document.createElement('tr');
 			const td = document.createElement('td');
 			td.colSpan = fruits.length;
-			td.innerHTML = info[15];
+			td.innerHTML = my_cat.info[15];
 			td.style.textAlign = 'center';
 			tr.appendChild(td);
 			container.appendChild(tr);
@@ -1608,7 +1608,7 @@ function renderForm(form, lvc_text, _super = false, hide = false) {
 			div.style.width = '128px';
 			var p = document.createElement('p');
 			r = r.split('!');
-			if (r[1]) {
+			if (r[1] != '0') {
 				img.src = `/img/r/${r[1]}.png`;
 				p.textContent = '×' + r[0];
 			} else {
@@ -2513,8 +2513,8 @@ function renderUintPage() {
 					div.style.width = '128px';
 					var p = document.createElement('p');
 					r = r.split('!');
-					if (r[1]) {
-						img.src = `/img/r/${r[1]}_f.png`;
+					if (r[1] != '0') {
+						img.src = `/img/r/${r[1]}.png`;
 						p.textContent = '×' + r[0];
 					} else {
 						img.src = '/img/r/6.png';
@@ -2529,7 +2529,7 @@ function renderUintPage() {
 				unit_content.appendChild(container);
 			} else if (form.lvc == 3) {
 				const container = document.createElement('table');
-				const fruits = info[9].split('|');
+				const fruits = my_cat.info[9].split('|');
 				tables.push(['進化素材(四階)', container]);
 				mkTool(container);
 				container.style.marginBottom = '60px';
@@ -2551,7 +2551,7 @@ function renderUintPage() {
 					div.style.width = '128px';
 					var p = document.createElement('p');
 					r = r.split('!');
-					if (r[1]) {
+					if (r[1] != '0') {
 						img.src = `/img/r/${r[1]}.png`;
 						p.textContent = '×' + r[0];
 					} else {

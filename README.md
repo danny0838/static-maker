@@ -9,7 +9,7 @@ static-maker use [Node.js](https://nodejs.org/) to generate static files.
 ```bash
 $ git clone "https://github.com/battlecatsinfo/static-maker.git"
 $ npm install
-$ mkdir out
+$ mkdir _out
 $ cd out
 $ git clone "https://github.com/battlecatsinfo/battlecatsinfo.github.io"
 ```
@@ -50,15 +50,6 @@ $ node foo.js
 * `gamatoto.js`: produces `gamatoto.html`
 * `esearch.js`: produces `esearch.html`
 
-## Publish to Github Pages
-
-```bash
-$ cd out
-$ git add .
-$ git commit -m "commit message"
-$ git push
-```
-
 ## Codding style
 
 * Always indent using tabs
@@ -74,7 +65,7 @@ $ git push
 * Collab History(Japan): https://forum.gamer.com.tw/C.php?bsn=23772&snA=20642
 * Stage schedule(Taiwan): https://forum.gamer.com.tw/C.php?bsn=23772&snA=20534
 
-※ All resources are reproduced with the permission of the author
+※All resources are reproduced with the permission of the author
 
 ## Discord Server
 

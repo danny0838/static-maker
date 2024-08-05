@@ -417,7 +417,6 @@ new (class extends require('./base.js') {
 		const
 			units = O['units'],
 			result = [];
-
 		let
 			I,
 			S = '',
@@ -517,10 +516,12 @@ new (class extends require('./base.js') {
 			}
 		}
 		S += '</tbody></table><small>有*標示為每十抽必定可獲得的限定角色</small>';
-		S += `<p style="margin-top:2em;"><a href="${O['stage'][0]}">${O['stage'][1]}</a></p>`;
+		if (O['stage'])
+			S += `<p style="margin-top:2em;"><a href="${O['stage'][0]}">${O['stage'][1]}</a></p>`;
 		if (O['farm'])
 			S += `<table class="w3-table Y" style="width:auto">${O['farm']}</table>`;
-		S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto">${O['max']}</table>`;
+		if (O['max'])
+			S += `<p style="margin-top:2em;">角色加值上限</p><table class="w3-table Y" style="width:auto">${O['max']}</table>`;
 
 		return S;
 	}
@@ -548,7 +549,7 @@ new (class extends require('./base.js') {
 	gen1(u, C = 1) {
 		return C == 1 ?
 			`<td><div style="font-weight:bold">${this.unit_name[u]}</div><a class="B" href="/unit.html?id=${u}"><img src="${this.uimg(u)}" width="104" height="79" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>` :
-			`<td><div style="font-weight:bold" style="margin-block-start:1em;margin-block-end:1em">${this.unit_name[u]}<div style="color:red !important;font-size:0.8em">出現機率×${C}</div></div><a class="B" href="/unit.html?id={u}"><img src="${this.uimg(u)}" width="104" height="79" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>`;
+			`<td><div style="font-weight:bold" style="margin-block-start:1em;margin-block-end:1em">${this.unit_name[u]}<div style="color:red !important;font-size:0.8em">出現機率×${C}</div></div><a class="B" href="/unit.html?id=${u}"><img src="${this.uimg(u)}" width="104" height="79" loading="lazy"></a><div style="font-size:0.8em">${this.unit_desc[u].replaceAll('|', '<br>')}</div></td>`;
 	}
 	load_unit() {
 		let line, data = this.load('cat.tsv').split('\n'), id = '';

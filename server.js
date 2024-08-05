@@ -44,7 +44,7 @@ process.argv.slice(2).forEach(arg => {
 		console.error(`Unknown option: ${arg} (Use "-h", "--help" for help)`);
 });
 
-process.chdir('out');
+process.chdir('_out');
 
 if (verbose)
 	import('chalk').then(x => main(x.default));
