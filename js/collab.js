@@ -63,7 +63,7 @@ new (class extends require('./base.js') {
 			let img1 = '', img2 = '';
 			O = C['img'];
 			if (O) {
-				img1 = '<meta property="og:image" content="' + O + '>';
+				img1 = '<meta property="og:image" content="' + O + '">';
 				img2 = '<img style="display: block;margin: 0 auto;max-width: 100%;" src="' + O + '">';
 			}
 			this.write_string(fn, this.template(collab_template, {
@@ -116,7 +116,7 @@ new (class extends require('./base.js') {
 					[width, height] = size.split('x');
 				else
 					width = '860', height = '240';
-				S += `<a style="margin-left:1em;text-align:center;" href="/gacha/${to_path(p['en-name'])}">${p['tw-name']}</a><img class="I" src="${['img']} width="${width}" height=${height} loading="lazy">`;
+				S += `<a style="margin-left:1em;text-align:center;" href="/gacha/${to_path(p['en-name'])}">${p['tw-name']}</a><img class="I" src="${['img']}" width="${width}" height="${height}" loading="lazy">`;
 			} else {
 				console.warn('Not found', p);
 			}
@@ -126,7 +126,7 @@ new (class extends require('./base.js') {
 	write_links(O) {
 		let S = '<h2>外部鏈結</h2><ul style="margin-left:1em;">';
 		for (const [title, url] of Object.entries(O))
-			S += `<li><a target="blank" href="${url}">${title}</a></li>`;
+			S += `<li><a target="_blank" href="${url}">${title}</a></li>`;
 		S += '</ul>';
 		return S;
 	}
@@ -197,7 +197,7 @@ new (class extends require('./base.js') {
 				rewards += `<img class="R" width="128" height="128" loading="lazy" src="/img/r/${r}.png">`;
 			}
 			dup_r.clear();
-			S += `\t\t<tr><td><a href="/stage.html?s=${s}" target="_blank">${name}</td><td>${len}</td>${stars}<td>${rewards}</td></tr>`;
+			S += `\t\t<tr><td><a href="/stage.html?s=${s}" target="_blank">${name}</a></td><td>${len}</td>${stars}<td>${rewards}</td></tr>`;
 		}
 		S += '\n\t</tbody>\n</table>';
 		return S;
