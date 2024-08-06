@@ -6,7 +6,7 @@ Source code for [battlecatsinfo.github.io](https://github.com/battlecatsinfo/bat
 
 static-maker use [Node.js](https://nodejs.org/) to generate static files.
 
-```bash
+```sh
 $ git clone "https://github.com/battlecatsinfo/static-maker.git"
 $ npm install
 $ mkdir _out
@@ -27,13 +27,13 @@ Note: To display images successfully, you may need to clone https://github.com/b
 
 Use Node.js to run build scripts.
 
-```bash
+```sh
 $ node js/foo.js
 ```
 
 or
 
-```bash
+```sh
 $ cd js
 $ node foo.js
 ```
@@ -50,13 +50,13 @@ $ node foo.js
 * `gamatoto.js`: produces `gamatoto.html`
 * `esearch.js`: produces `esearch.html`
 
-## Codding style
+## Coding style
 
 * Always indent using tabs
 * Always use LF line ending
-* Use `require` not `import` in JavaScript files
+* Use `require` instead of `import` in JavaScript files
 
-## Resouces
+## Resources
 
 * Cat obtain/involve: https://docs.google.com/spreadsheets/d/1AOId2OhHT59WgpVtgvUylh_9_l-mf2qWvUqyB2cbm0g/edit?usp=sharing
 * Enemy Species: https://docs.google.com/spreadsheets/d/1pVSY0EkiBolHCtoj15JW_T0ih9prya6q_9HCmJ5Jo0k/edit?usp=sharing
